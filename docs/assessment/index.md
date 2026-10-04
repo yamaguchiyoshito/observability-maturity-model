@@ -1,6 +1,6 @@
 ---
 title: 評価の進め方
-nav_order: 4
+nav_order: 6
 has_children: true
 permalink: /assessment/
 ---

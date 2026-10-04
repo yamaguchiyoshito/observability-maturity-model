@@ -1,0 +1,206 @@
+/* オブザーバビリティ成熟度モデル サイト固有スタイル（just-the-docs の上に重ねる） */
+
+:root {
+  --omm-accent: #7253ed;
+  --omm-accent-bg: #f0ecfd;
+  --omm-border: #e6e1e8;
+  --omm-muted: #6f6f6f;
+  --omm-bg: #fff;
+  --omm-head-bg: #f7f6f9;
+}
+
+/* ---------- 左ペインの標準 / コンパクト切替 ---------- */
+.omm-nav-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.35rem;
+  margin-right: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--omm-muted);
+  background: transparent;
+  border: 1px solid var(--omm-border);
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.omm-nav-toggle:hover { color: var(--omm-accent); border-color: var(--omm-accent); }
+.omm-nav-toggle .omm-nav-toggle-icon { font-size: 0.9rem; }
+
+/* 50rem(md) 以上では just-the-docs のサイドバーが固定表示になるので、そこだけ切替を出す */
+@media (min-width: 50rem) {
+  .omm-nav-toggle { display: inline-flex; }
+  html.omm-nav-compact .side-bar { display: none; }
+  html.omm-nav-compact .main {
+    margin-left: 0 !important;
+    max-width: none !important;
+  }
+  html.omm-nav-compact .main-content-wrap,
+  html.omm-nav-compact .main-header { max-width: none !important; }
+  html.omm-nav-compact .main-content { max-width: none; }
+}
+
+/* ---------- マトリクス表（全量 / 個人評価） ---------- */
+.omm-matrix-wrap {
+  overflow-x: auto;
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--omm-border);
+  border-radius: 4px;
+}
+.omm-matrix-wrap .table-wrapper { margin: 0; border: 0; box-shadow: none; }
+
+table.omm-matrix {
+  display: table !important;      /* just-the-docs は table を display:block にする */
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  font-size: 0.78rem !important;
+  line-height: 1.55;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+table.omm-matrix th,
+table.omm-matrix td {
+  vertical-align: top;
+  min-width: 17rem;
+  max-width: 22rem;
+  padding: 0.6rem 0.7rem !important;
+  border-right: 1px solid var(--omm-border);
+  border-bottom: 1px solid var(--omm-border);
+  background: var(--omm-bg);
+}
+table.omm-matrix thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  text-align: center;
+  font-weight: 600;
+  background: var(--omm-head-bg);
+}
+table.omm-matrix thead th .omm-lv-name { font-weight: 400; font-size: 0.7rem; color: var(--omm-muted); }
+table.omm-matrix th.omm-axis,
+table.omm-matrix thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 11rem;
+  max-width: 13rem;
+  text-align: left;
+  background: var(--omm-head-bg);
+  box-shadow: 2px 0 0 0 var(--omm-border);
+}
+table.omm-matrix thead th:first-child { z-index: 4; }
+table.omm-matrix th.omm-axis a { font-weight: 600; }
+table.omm-matrix .omm-def { margin-top: 0.3rem; font-weight: 400; font-size: 0.7rem; color: var(--omm-muted); }
+table.omm-matrix .omm-note { margin-top: 0.3rem; font-weight: 400; font-size: 0.65rem; color: var(--omm-muted); }
+table.omm-matrix p { margin: 0 0 0.4rem; }
+table.omm-matrix p.omm-desc { margin-bottom: 0.4rem; }
+table.omm-matrix details { margin: 0.2rem 0 0.3rem; }
+table.omm-matrix details summary {
+  cursor: pointer;
+  font-size: 0.72rem;
+  color: var(--omm-accent);
+  list-style: none;
+}
+table.omm-matrix details summary::before { content: "▸ "; }
+table.omm-matrix details[open] summary::before { content: "▾ "; }
+table.omm-matrix details p {
+  margin: 0.3rem 0 0;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.72rem;
+  color: #333;
+  background: var(--omm-head-bg);
+  border-left: 2px solid var(--omm-accent);
+}
+table.omm-matrix a.omm-more { font-size: 0.7rem; }
+
+.omm-toolbar { margin: 0 0 0.75rem; }
+.omm-toolbar .btn { font-size: 0.72rem; padding: 0.3rem 0.7rem; margin-right: 0.3rem; }
+
+/* ---------- 個人評価 ---------- */
+.omm-sa-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.2rem;
+  align-items: center;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8rem;
+  background: var(--omm-head-bg);
+  border: 1px solid var(--omm-border);
+  border-radius: 4px;
+}
+.omm-sa-meta input[type="text"] {
+  margin-left: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--omm-border);
+  border-radius: 4px;
+  min-width: 14rem;
+}
+.omm-sa-meta .omm-sa-actions { margin-left: auto; }
+.omm-sa-meta .btn { font-size: 0.72rem; padding: 0.3rem 0.7rem; margin: 0; }
+
+table.omm-sa-table td.omm-sa-cell {
+  position: relative;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+table.omm-sa-table td.omm-sa-cell:hover { background: #faf8ff; }
+table.omm-sa-table td.omm-sa-cell:focus-visible { outline: 2px solid var(--omm-accent); outline-offset: -2px; }
+table.omm-sa-table td.omm-sa-cell[aria-checked="true"] {
+  background: var(--omm-accent-bg);
+  box-shadow: inset 0 0 0 2px var(--omm-accent);
+}
+table.omm-sa-table td.omm-sa-na { min-width: 7rem; max-width: 8rem; text-align: center; color: var(--omm-muted); }
+.omm-sa-badge {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  padding: 0.05rem 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--omm-muted);
+  background: var(--omm-head-bg);
+  border-radius: 999px;
+}
+td.omm-sa-cell[aria-checked="true"] .omm-sa-badge { color: #fff; background: var(--omm-accent); }
+td.omm-sa-cell[aria-checked="true"] .omm-sa-badge::after { content: " ✓"; }
+
+.omm-sa-summary { font-size: 0.85rem; }
+.omm-sa-summary table { font-size: 0.8rem; }
+.omm-sa-summary .omm-bar {
+  display: inline-block;
+  height: 0.7rem;
+  vertical-align: middle;
+  background: var(--omm-accent);
+  border-radius: 2px;
+}
+.omm-sa-summary .omm-bar-track { display: inline-block; width: 10rem; height: 0.7rem; vertical-align: middle; background: var(--omm-head-bg); border-radius: 2px; margin-right: 0.4rem; }
+.omm-sa-summary .omm-lv-pill {
+  display: inline-block;
+  min-width: 2.2rem;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  background: var(--omm-accent);
+  border-radius: 999px;
+}
+.omm-sa-summary .omm-lv-pill.omm-lv-none { color: var(--omm-muted); background: var(--omm-head-bg); }
+.omm-muted { color: var(--omm-muted); }
+.omm-sa-toast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8rem;
+  color: #fff;
+  background: #333;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.omm-sa-toast.omm-show { opacity: 1; }

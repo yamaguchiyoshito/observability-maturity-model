@@ -30,8 +30,12 @@ DMM.comで策定・運用されている、組織のオブザーバビリティ�
 
 - [はじめに](docs/index.md) — モデルの読み方
 - [成熟度モデル](docs/model/index.md) — 名称定義・レベル定義・6軸×5レベル一覧。各軸ページでレベルごとの説明・具体例と、次のレベルへの改善アクションを続けて読めます
+- [全量マトリクス](docs/matrix.md) — 6 軸 × 5 レベルの説明・具体例と改善アクションを 1 枚の表で
 - [レベル別ビュー](docs/levels/index.md) — 「レベル N とは全体としてどんな状態か」を軸横断で読む
+- [個人評価](docs/self-assessment.md) — 表上でレベルを選択して自己評価。選択はブラウザの localStorage に保存され、集計をページ内に表示（Pages 上でのみ動作）
 - [評価の進め方](docs/assessment/index.md) — 評価手順、判定で迷いやすい点、[レポートテンプレート](docs/assessment/report-template.md)
+
+左ペインの目次はヘッダの「目次: 標準 / コンパクト」で畳めます（横長の表を読むとき用。設定はブラウザに保存）。
 - [ダウンロード](docs/downloads.md)
 
 公開手順: リポジトリの **Settings → Pages → Source: Deploy from a branch → Branch: `main` / Folder: `/docs`**。`docs/_config.yml` の `url` / `baseurl` / `aux_links` をフォーク先に合わせて書き換えてください。

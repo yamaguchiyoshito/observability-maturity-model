@@ -1,3 +1,11 @@
+<!-- サイト固有のスタイルと共通スクリプト（左ペインの標準/コンパクト切替、details 一括開閉） -->
+<link rel="stylesheet" href="{{ '/assets/css/omm.css' | relative_url }}">
+<script>
+  // 描画前に localStorage の設定を反映し、左ペインのちらつきを防ぐ
+  try { if (window.localStorage.getItem('omm-nav-compact') === '1') document.documentElement.classList.add('omm-nav-compact'); } catch (e) {}
+</script>
+<script src="{{ '/assets/js/omm-site.js' | relative_url }}" defer></script>
+
 <!--
   日本語全文検索の有効化。
   just-the-docs の検索は lunr.js を使うが、標準の lunr.trimmer は \w 以外（＝日本語すべて）を

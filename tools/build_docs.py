@@ -5,6 +5,8 @@
   docs/model/index.md                 名称定義・CMMI レベル・6 軸 × 5 レベルの一覧表
   docs/model/<axis-slug>.md           軸別ページ: 定義 → レベル1〜5（説明・具体例）→ 各レベル間の改善アクション
   docs/levels/level-<n>.md            レベル別ページ: 全軸のそのレベルの状態を横断で読む
+  docs/matrix.md                      全量マトリクス: 6 軸 × 5 レベルの説明・具体例と改善アクションを 1 枚で
+  docs/self-assessment.md             個人評価: セルを選択して自己評価（状態は localStorage、集計をページ内表示）
   .claude/skills/observability-maturity-assessment/references/csv/*.csv   スキル同梱コピー
 
 使い方:
@@ -14,7 +16,7 @@
 from __future__ import annotations
 
 import argparse
-import shutil
+import html
 import sys
 from pathlib import Path
 from typing import Dict, List
@@ -164,7 +166,7 @@ def gen_axis_page(model: Model, a: Axis) -> str:
 
 def gen_levels_index(model: Model) -> str:
     out = [
-        front_matter(title="レベル別ビュー", nav_order=3, has_children=True, permalink="/levels/"),
+        front_matter(title="レベル別ビュー", nav_order=4, has_children=True, permalink="/levels/"),
         GENERATED_NOTE,
         "",
         "# レベル別ビュー",
@@ -215,6 +217,154 @@ def gen_level_page(model: Model, n: int) -> str:
     return "\n".join(out) + "\n"
 
 
+def _h(s: str) -> str:
+    return html.escape(s or "", quote=True)
+
+
+def _axis_head_cell(a: Axis) -> str:
+    note = f'<div class="omm-note">{_h(a.note)}</div>' if a.note else ""
+    return (
+        f'<th scope="row" class="omm-axis"><a href="model/{a.slug}.html">{a.key}. {_h(a.name)}</a>'
+        f'<div class="omm-def">{_h(a.definition)}</div>{note}</th>'
+    )
+
+
+def gen_matrix_page(model: Model) -> str:
+    """6 軸 × 5 レベルの全量を 1 枚で確認するマトリクス（説明 + 折りたたみの具体例）と、改善アクションのマトリクス。"""
+    out: List[str] = [
+        front_matter(title="全量マトリクス", nav_order=3),
+        GENERATED_NOTE,
+        "<!-- permalink は付けない: 相対パス（assets/, model/）を Pages と GitHub の両方で一致させるため -->",
+        "",
+        "# 全量マトリクス",
+        "",
+        "縦軸に評価軸、横軸に成熟度レベルを取り、全セルの「説明」を 1 枚で確認できる表です。「具体例」はセル内で展開します。表は横に長いので、画面上部の **目次: コンパクト** で左ペインを畳むと読みやすくなります。",
+        "",
+        '<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-levels" data-open="true">具体例をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-levels" data-open="false">すべて閉じる</button></p>',
+        "",
+        "## 成熟度レベル定義",
+        "",
+        '<div class="omm-matrix-wrap"><table class="omm-matrix omm-matrix-levels">',
+        "<thead><tr><th>評価軸</th>"
+        + "".join(f'<th>L{n}<br><span class="omm-lv-name">{_h(model.level_name(n))}</span></th>' for n in range(1, 6))
+        + "</tr></thead>",
+        "<tbody>",
+    ]
+    for a in model.axes:
+        cells = []
+        for n in range(1, 6):
+            lv = a.levels[n]
+            cells.append(
+                f'<td><p class="omm-desc">{_h(lv.description)}</p>'
+                f'<details><summary>具体例</summary><p>{_h(lv.example)}</p></details>'
+                f'<a class="omm-more" href="model/{a.slug}.html#level-{n}">詳細 →</a></td>'
+            )
+        out.append(f"<tr>{_axis_head_cell(a)}{''.join(cells)}</tr>")
+    out += [
+        "</tbody></table></div>",
+        "",
+        "## 改善アクションプラン",
+        "",
+        "各セルは「改善アクション（必須）」を表示し、「活用アクション（推奨）」「注意点メモ」はセル内で展開します。",
+        "",
+        '<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-actions" data-open="true">活用アクション・注意点をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-actions" data-open="false">すべて閉じる</button></p>',
+        "",
+        '<div class="omm-matrix-wrap"><table class="omm-matrix omm-matrix-actions">',
+        "<thead><tr><th>評価軸</th>"
+        + "".join(f"<th>L{n}→L{n + 1}</th>" for n in range(1, 5))
+        + "</tr></thead>",
+        "<tbody>",
+    ]
+    for a in model.axes:
+        cells = []
+        for n in range(1, 5):
+            t = a.transitions.get((n, n + 1))
+            if not t:
+                cells.append("<td>—</td>")
+                continue
+            cells.append(
+                f'<td><p class="omm-desc"><strong>改善（必須）</strong> {_h(t.improvement)}</p>'
+                f'<details><summary>活用アクション（推奨）</summary><p>{_h(t.leverage)}</p></details>'
+                f'<details><summary>注意点メモ</summary><p>{_h(t.notes)}</p></details>'
+                f'<a class="omm-more" href="model/{a.slug}.html#transition-{n}-{n + 1}">詳細 →</a></td>'
+            )
+        out.append(f"<tr>{_axis_head_cell(a)}{''.join(cells)}</tr>")
+    out += [
+        "</tbody></table></div>",
+        "",
+        "関連: [個人評価](self-assessment.md)（このマトリクス上でレベルを選択して集計） / [成熟度モデル](model/index.md) / [レベル別ビュー](levels/index.md)",
+        "",
+    ]
+    return "\n".join(out) + "\n"
+
+
+def gen_self_assessment_page(model: Model) -> str:
+    """セルを選択して自己評価を行うページ。状態は localStorage に保存し、集計をページ内に表示する（assets/js/omm-self-assessment.js）。"""
+    out: List[str] = [
+        front_matter(title="個人評価", nav_order=5),
+        GENERATED_NOTE,
+        "",
+        "# 個人評価",
+        "",
+        "各評価軸について、現状に最も近いレベルのセルをクリックして選択してください。選択内容はこのブラウザの localStorage に保存され、ページを閉じても保持されます（サーバには送信されません）。集計は選択のたびに下の「集計」に反映されます。",
+        "",
+        "判定の目安は [評価の進め方](assessment/index.md) を参照してください。レベルは「そのレベルの定義を証跡で示せる最高のレベル」とし、上位の取り組みが一部あるだけでは上げないのが原則です。",
+        "",
+        '<div class="omm-sa" id="omm-sa" data-storage-key="omm-self-assessment-v1">',
+        '<div class="omm-sa-meta">',
+        '<label>評価対象 <input type="text" id="omm-sa-target" placeholder="チーム名 / サービス名" maxlength="80"></label>',
+        '<span>最終更新: <span id="omm-sa-updated">—</span></span>',
+        '<span class="omm-sa-actions"><button type="button" class="btn btn-outline" id="omm-sa-copy">集計を Markdown でコピー</button> <button type="button" class="btn btn-outline" id="omm-sa-reset">リセット</button></span>',
+        "</div>",
+        "",
+        '<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-sa-table" data-open="true">具体例をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-sa-table" data-open="false">すべて閉じる</button></p>',
+        "",
+        '<div class="omm-matrix-wrap"><table class="omm-matrix omm-sa-table">',
+        "<thead><tr><th>評価軸</th>"
+        + "".join(f'<th>L{n}<br><span class="omm-lv-name">{_h(model.level_name(n))}</span></th>' for n in range(1, 6))
+        + "<th>対象外</th></tr></thead>",
+        "<tbody>",
+    ]
+    for a in model.axes:
+        cells = []
+        for n in range(1, 6):
+            lv = a.levels[n]
+            cells.append(
+                f'<td class="omm-sa-cell" data-level="{n}" role="radio" aria-checked="false" tabindex="0" '
+                f'aria-label="{_h(a.name)} レベル{n}">'
+                f'<span class="omm-sa-badge">L{n}</span>'
+                f'<p class="omm-desc">{_h(lv.description)}</p>'
+                f'<details><summary>具体例</summary><p>{_h(lv.example)}</p></details></td>'
+            )
+        cells.append(
+            f'<td class="omm-sa-cell omm-sa-na" data-level="0" role="radio" aria-checked="false" tabindex="0" '
+            f'aria-label="{_h(a.name)} 対象外"><span class="omm-sa-badge">—</span><p class="omm-desc">対象外 / 未評価</p></td>'
+        )
+        out.append(
+            f'<tr data-axis="{a.key}" data-axis-name="{_h(a.name)}" data-axis-slug="{a.slug}">'
+            f"{_axis_head_cell(a)}{''.join(cells)}</tr>"
+        )
+    level_names = ",".join(f'"{n}":"{_h(model.level_name(n))}"' for n in range(1, 6))
+    out += [
+        "</tbody></table></div>",
+        "",
+        '<h2 id="summary">集計</h2>',
+        '<div id="omm-sa-summary" class="omm-sa-summary" data-level-names=\'{' + level_names + "}'>"
+        '<p class="omm-muted">まだ選択がありません。</p></div>',
+        "</div>",
+        "",
+        '<script src="assets/js/omm-self-assessment.js" defer></script>',
+        "",
+        "## 使い方の補足",
+        "",
+        "- 選択はセルのクリックまたはキーボード（Enter / Space）で行えます。同じセルをもう一度クリックすると選択を解除します。",
+        "- 「集計を Markdown でコピー」は、[評価レポートテンプレート](assessment/report-template.md) のサマリ表に貼り付けられる形式です。",
+        "- 別の端末・ブラウザには引き継がれません。チームで共有する場合はコピーした Markdown を使ってください。",
+        "",
+    ]
+    return "\n".join(out) + "\n"
+
+
 def planned_outputs(model: Model) -> Dict[Path, str]:
     files: Dict[Path, str] = {DOCS / "model" / "index.md": gen_model_index(model)}
     for a in model.axes:
@@ -222,6 +372,8 @@ def planned_outputs(model: Model) -> Dict[Path, str]:
     files[DOCS / "levels" / "index.md"] = gen_levels_index(model)
     for n in range(1, 6):
         files[DOCS / "levels" / f"level-{n}.md"] = gen_level_page(model, n)
+    files[DOCS / "matrix.md"] = gen_matrix_page(model)
+    files[DOCS / "self-assessment.md"] = gen_self_assessment_page(model)
     return files
 
 
