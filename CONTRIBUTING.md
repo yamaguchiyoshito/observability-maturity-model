@@ -31,6 +31,34 @@
 
 PDFはCSVから生成される閲覧用の成果物で、CSVが唯一の正となります。CSVを更新した場合は、対応するPDF（`pdf/`）も再生成しておくと、閲覧時にCSVとPDFの内容が食い違わずに済みます。
 
+## 🧩 Markdown（docs/）とスキル同梱データの再生成
+
+`docs/model/`・`docs/levels/`・`docs/matrix.md`・`docs/self-assessment.md`、`build/model.json`、および評価スキルが同梱する CSV コピー（`.claude/skills/observability-maturity-assessment/references/csv/`）は、CSV から自動生成しています。**直接編集せず**、CSV を編集したあとに次を実行してください（Python 3.9 以降、標準ライブラリのみ）。
+
+```bash
+python3 tools/build_docs.py
+```
+
+サイトのビルド（`npm run docs:build`）と PR 検証（`.github/workflows/docs.yml`）は次を行います。いずれかが失敗した場合は上記コマンドを実行して差分をコミットしてください。
+
+1. `omm_model.py --validate-only` — 2 つの CSV の対応（6 軸 × レベル1〜5 の定義と、レベル1→2 〜 4→5 の改善アクションが揃っているか）
+2. `build_docs.py --check` — 生成物が CSV と同期しているか
+3. `build_docs.py --downloads` — ダウンロード用の PDF・CSV・JSON と manifest を `docs/public/downloads/` に生成（gitignore 対象）
+4. VitePress ビルドと `scripts/check_site.mjs` による Playwright 検証（主要ページ、個人評価の保存、目次切替、日本語検索、ダウンロード、モバイル表示）
+5. 評価スキルのスクリプトがこのリポジトリを走査できるか（スモークテスト）
+
+サイトをローカルで確認するには `npm ci` のあと `npm run docs:dev` を実行します（Node.js は `.nvmrc` の版）。
+
+### 評価軸を追加・改名する場合
+
+- 軸名は 2 つの CSV で完全に一致させてください（`omm_model.py` は軸名で対応付けます）。
+- 軸ページのファイル名（英語スラッグ）は `.claude/skills/observability-maturity-assessment/scripts/omm_model.py` の `AXIS_SLUGS` で定義しています。新しい軸を追加した場合はここにスラッグを追加してください（未定義なら `axis-N` になります）。
+- 証跡シグナル（`scripts/signals.json`）の `axis` キー（`A1`〜`A6`）は軸の出現順に対応します。軸の順序を変えた場合は見直してください。
+
+### 手書きページ
+
+`docs/index.md`・`docs/assessment/`・`docs/downloads.md`・`docs/.vitepress/` は手書きです。モデル本文を引用する場合はリンクで参照し、文章をコピーしないでください（CSV 更新時に食い違います）。ナビゲーションとサイドバーの並びは `docs/.vitepress/config.ts` で定義しています（評価軸とレベルの項目は `build/model.json` から自動生成）。
+
 ## 📄 ライセンス
 
 このリポジトリを利用・カスタマイズする際は、[Creative Commons Attribution 4.0 International License](LICENSE) の条件（著作者のクレジット表示）に従ってください。

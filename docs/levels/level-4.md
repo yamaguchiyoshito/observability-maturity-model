@@ -1,0 +1,61 @@
+---
+title: "レベル4: 定量管理"
+---
+<!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
+
+# レベル4: 定量管理
+
+> **CMMI 上の定義**: プロセスのパフォーマンスが統計的手法により定量的に測定・制御されており、予測可能かつ安定した成果が得られている。
+
+## A1. [データ収集と可視化](../model/data-collection-and-visualization.md#level-4)
+
+<div class="omm-block omm-desc"><p class="omm-block-title">説明</p><p>データ収集・可視化のパフォーマンスがKPIや統計的手法により定量的に測定・制御されており、プロセスの品質・精度の安定運用が実現されている。異常検知の精度や検出遅延なども評価対象となっている。</p></div>
+
+<div class="omm-block omm-example"><p class="omm-block-title">具体例</p><p>収集率・データ精度・しきい値調整頻度・アラート検出精度などをKPIで管理している。異常検知アルゴリズムの誤検知率・見逃し率を測定しており、継続的にモデルを改善している。</p></div>
+
+<div class="omm-block omm-required"><p class="omm-block-title">レベル5 へ進むための改善アクション<span>必須</span></p><p>収集した監視データを活用し、リリース後のパフォーマンス変化や影響範囲を迅速に検知できる体制を整備します。さらに、機械学習による予測分析とAI技術を用いて、異常兆候の自動予測、影響範囲の推定、優先対応案の自動提示など、予測・最適化・対応提案を統合した仕組みを実装し、自律的な運用改善サイクルを推進します。</p><p class="omm-block-more"><a href="../model/data-collection-and-visualization.html#transition-4-5">活用アクション・注意点メモ →</a></p></div>
+
+## A2. [システムの信頼性管理](../model/system-reliability-management.md#level-4)
+
+<div class="omm-block omm-desc"><p class="omm-block-title">説明</p><p>観測された信頼性指標（例：稼働率、障害件数、対応時間など）をモニタリングし、対応プロセスやリスク要因削減の成果を統計的に評価している。予兆検知や事後レビューと連携して、改善を管理している。</p></div>
+
+<div class="omm-block omm-example"><p class="omm-block-title">具体例</p><p>収集された稼働データをもとに、再発防止策や対応遅延の改善効果などを評価している。予兆検知の仕組みにより、障害の兆候を早期に特定できるようにしており、CI/CDパイプラインにも信頼性のチェックを組み込んでいる。</p></div>
+
+<div class="omm-block omm-required"><p class="omm-block-title">レベル5 へ進むための改善アクション<span>必須</span></p><p>ログやメトリクスの高度な分析により、障害予兆の検出と影響評価を自動化します。インシデントの種類ごとに復旧処理を自動実行する機能を構築し、サービス影響を最小化します。復旧履歴やナレッジの自動蓄積・共有機能も整備し、組織全体で自律的な信頼性向上サイクルが継続的に実現される仕組みを構築します。</p><p class="omm-block-more"><a href="../model/system-reliability-management.html#transition-4-5">活用アクション・注意点メモ →</a></p></div>
+
+## A3. [開発・運用プロセスの整備と最適化](../model/dev-ops-process-optimization.md#level-4)
+
+<div class="omm-block omm-desc"><p class="omm-block-title">説明</p><p>コード品質やリリースの結果をKPIとして定量的に測定し、影響範囲の可視化とフィードバックループを通じて継続的な改善を実施している。</p></div>
+
+<div class="omm-block omm-example"><p class="omm-block-title">具体例</p><p>コードカバレッジ、エラー率、デプロイ頻度などのKPIを設定し、定期的なレビューを通じて品質向上に取り組んでいる。本番環境の挙動をリアルタイムで監視し、リリース後の影響を即時に分析して、必要に応じてロールバックや修正リリースを実施している。</p></div>
+
+<div class="omm-block omm-required"><p class="omm-block-title">レベル5 へ進むための改善アクション<span>必須</span></p><p>開発・運用プロセス全体に対して、継続的な改善活動（例：振り返りミーティング、KPT方式など）を正式な運用サイクルに組み込みます。さらに、AIによるコード解析や変更影響分析の導入を検討し、レビューからデプロイまでのプロセス自動化を段階的に推進します。</p><p class="omm-block-more"><a href="../model/dev-ops-process-optimization.html#transition-4-5">活用アクション・注意点メモ →</a></p></div>
+
+## A4. [アラート最適化と障害対応](../model/alert-optimization-and-incident-response.md#level-4)
+
+<div class="omm-block omm-desc"><p class="omm-block-title">説明</p><p>アラート履歴や影響度をもとに、AIによる優先度付けや自動チューニングを行い、判断支援と迅速な対応を実現している。</p></div>
+
+<div class="omm-block omm-example"><p class="omm-block-title">具体例</p><p>AIが過去のアラート発生パターンを学習し、誤検知を抑制しながらクリティカルな異常の優先通知を実施している。これにより、エンジニアの認知負荷を軽減し、迅速かつ的確な障害対応を可能としている。</p></div>
+
+<div class="omm-block omm-required"><p class="omm-block-title">レベル5 へ進むための改善アクション<span>必須</span></p><p>障害発生前の異常兆候（例：レイテンシ増加傾向、エラーレート微増など）をリアルタイムに検知できるよう、ベースライン異常検知やML（機械学習）を活用したアラート設計を運用に組み込み、継続的に改善しています。</p><p class="omm-block-more"><a href="../model/alert-optimization-and-incident-response.html#transition-4-5">活用アクション・注意点メモ →</a></p></div>
+
+## A5. [ユーザー行動の理解と最適化](../model/user-behavior-understanding.md#level-4)
+
+<div class="omm-block omm-desc"><p class="omm-block-title">説明</p><p>機械学習を活用してユーザー属性や行動パターンを分類・予測し、リアルタイムでUIや機能を動的に最適化している。</p></div>
+
+<div class="omm-block omm-example"><p class="omm-block-title">具体例</p><p>AIがユーザーの過去の行動データを分析し、リアルタイムでパーソナライズされたコンテンツやレコメンデーションを提供している。たとえば、閲覧履歴に応じて最適なコンテンツを自動で推薦し、エンゲージメントやコンバージョン率の向上につなげている。</p></div>
+
+<div class="omm-block omm-required"><p class="omm-block-title">レベル5 へ進むための改善アクション<span>必須</span></p><p>ユーザー行動分析の結果をもとに、ユーザー属性や行動傾向に応じた価値提供アクション（例：レコメンド戦略の設計、UI改善方針の策定など）を具体化し、ユーザー体験の最適化に向けた取り組みを実施します。</p><p class="omm-block-more"><a href="../model/user-behavior-understanding.html#transition-4-5">活用アクション・注意点メモ →</a></p></div>
+
+## A6. [継続的な改善と最適化](../model/continuous-improvement.md#level-4)
+
+<div class="omm-block omm-desc"><p class="omm-block-title">説明</p><p>改善指標（KPI）やログデータを活用し、改善サイクル（PDCA）が測定・制御されており、成果も定量的に評価されている。</p></div>
+
+<div class="omm-block omm-example"><p class="omm-block-title">具体例</p><p>開発や運用のモニタリングデータを分析し、問題発生時には自動で改善ポイントを特定する仕組みを構築している。改善施策を定期的に実施し、最適化を標準業務として継続的に実行している。</p></div>
+
+<div class="omm-block omm-required"><p class="omm-block-title">レベル5 へ進むための改善アクション<span>必須</span></p><p>運用や開発の各プロセスに対して、KPI達成状況や改善活動の効果を定期的に可視化・共有する場（例：月次レビュー、振り返り会）を設け、継続的改善を組織文化として根付かせる活動を始めます。さらに、改善対象や改善アクションの特定・提案・実行にAIを活用し、改善サイクルの自動化・自律化を段階的に進めます。</p><p class="omm-block-more"><a href="../model/continuous-improvement.html#transition-4-5">活用アクション・注意点メモ →</a></p></div>
+
+---
+
+← [レベル3](level-3.md) | [レベル別ビュー](index.md) | [レベル5](level-5.md) →
+

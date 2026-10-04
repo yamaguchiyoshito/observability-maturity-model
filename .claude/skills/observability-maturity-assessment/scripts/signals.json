@@ -1,0 +1,1586 @@
+{
+  "_comment": "リポジトリ内の成果物から読み取れる『証跡シグナル』のカタログ。hint_level は『この成果物が存在する組織は通常そのレベル以上の活動をしている』という目安であり、最終レベルの判定ではない。paths は相対パスへの fnmatch グロブ、content は正規表現（大文字小文字無視）。content_paths を指定すると、そのグロブに一致するファイルだけを本文検索する（省略時は全テキストファイル）。",
+  "axes": {
+    "A1": "データ収集と可視化",
+    "A2": "システムの信頼性管理",
+    "A3": "開発・運用プロセスの整備と最適化",
+    "A4": "アラート最適化と障害対応",
+    "A5": "ユーザー行動の理解と最適化",
+    "A6": "継続的な改善と最適化"
+  },
+  "dependency_files": [
+    "package.json",
+    "go.mod",
+    "requirements*.txt",
+    "pyproject.toml",
+    "Pipfile",
+    "pom.xml",
+    "build.gradle",
+    "build.gradle.kts",
+    "Gemfile",
+    "Cargo.toml",
+    "*.csproj",
+    "composer.json",
+    "mix.exs",
+    "Package.swift",
+    "pubspec.yaml",
+    "*.gemspec",
+    "setup.py",
+    "setup.cfg"
+  ],
+  "signals": [
+    {
+      "id": "metrics-endpoint",
+      "axis": "A1",
+      "hint_level": 2,
+      "title": "メトリクス公開エンドポイント / クライアントライブラリ",
+      "content": [
+        "prometheus_client",
+        "prom-client",
+        "promhttp",
+        "micrometer",
+        "/metrics\\b",
+        "statsd",
+        "dogstatsd",
+        "opencensus"
+      ],
+      "content_paths": [
+        "$DEPS",
+        "*.go",
+        "*.py",
+        "*.js",
+        "*.ts",
+        "*.java",
+        "*.kt",
+        "*.rb",
+        "*.cs",
+        "*.rs",
+        "*.yaml",
+        "*.yml",
+        "*.properties"
+      ],
+      "why": "アプリケーションがメトリクスを継続的に収集・公開する仕組みを持つ。"
+    },
+    {
+      "id": "structured-logging",
+      "axis": "A1",
+      "hint_level": 2,
+      "title": "構造化ロギングライブラリ",
+      "content": [
+        "go\\.uber\\.org/zap",
+        "zerolog",
+        "logrus",
+        "structlog",
+        "python-json-logger",
+        "\\bpino\\b",
+        "winston",
+        "\\bbunyan\\b",
+        "logstash-logback-encoder",
+        "log4j2.*json",
+        "serilog",
+        "semantic_logger",
+        "slog\\.New",
+        "lograge"
+      ],
+      "content_paths": [
+        "$DEPS",
+        "*.go",
+        "*.py",
+        "*.js",
+        "*.ts",
+        "*.java",
+        "*.kt",
+        "*.rb",
+        "*.cs",
+        "*.xml",
+        "*.properties"
+      ],
+      "why": "ログが機械可読な形式で収集・検索可能になっている。"
+    },
+    {
+      "id": "otel-sdk",
+      "axis": "A1",
+      "hint_level": 3,
+      "title": "OpenTelemetry SDK / 自動計装",
+      "content": [
+        "opentelemetry",
+        "go\\.opentelemetry\\.io",
+        "@opentelemetry/",
+        "io\\.opentelemetry",
+        "OTEL_EXPORTER",
+        "otlp"
+      ],
+      "why": "メトリクス・ログ・トレースをベンダー中立に統合収集する基盤がある。"
+    },
+    {
+      "id": "otel-collector-config",
+      "axis": "A1",
+      "hint_level": 3,
+      "title": "OpenTelemetry Collector 設定",
+      "paths": [
+        "**/otel-collector*.y*ml",
+        "**/otelcol*.y*ml",
+        "**/collector-config*.y*ml",
+        "**/otel/*.y*ml"
+      ],
+      "content": [
+        "receivers:\\s*$",
+        "exporters:\\s*$"
+      ],
+      "content_paths": [
+        "**/otel*.y*ml",
+        "**/collector*.y*ml"
+      ],
+      "why": "収集パイプラインが構成管理されている。"
+    },
+    {
+      "id": "distributed-tracing",
+      "axis": "A1",
+      "hint_level": 3,
+      "title": "分散トレーシング（Jaeger / Zipkin / Tempo / X-Ray / dd-trace）",
+      "content": [
+        "jaeger",
+        "zipkin",
+        "grafana/tempo",
+        "aws-xray",
+        "xray-sdk",
+        "dd-trace",
+        "ddtrace",
+        "newrelic.*agent",
+        "elastic-apm",
+        "sentry.*tracing",
+        "tracesSampleRate"
+      ],
+      "why": "リクエスト単位で層をまたいだ観測ができる。"
+    },
+    {
+      "id": "vendor-agent-config",
+      "axis": "A1",
+      "hint_level": 3,
+      "title": "商用/統合オブザーバビリティ基盤の設定（Datadog / New Relic / Dynatrace / Elastic / Splunk）",
+      "paths": [
+        "**/datadog.y*ml",
+        "**/datadog-agent*",
+        "**/newrelic.yml",
+        "**/newrelic.ini",
+        "**/newrelic.js",
+        "**/dynatrace*",
+        "**/filebeat*.y*ml",
+        "**/metricbeat*.y*ml",
+        "**/fluent-bit*.conf",
+        "**/fluentd*.conf",
+        "**/fluent.conf",
+        "**/vector.toml",
+        "**/vector.y*ml",
+        "**/promtail*.y*ml",
+        "**/splunk*"
+      ],
+      "content": [
+        "datadoghq",
+        "DD_API_KEY",
+        "DD_SITE",
+        "NEW_RELIC_LICENSE_KEY",
+        "dynatrace",
+        "splunk"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.env*",
+        "**/docker-compose*",
+        "**/Dockerfile*",
+        "**/*.toml",
+        "**/*.conf"
+      ],
+      "why": "複数層のデータを一箇所に統合して可視化する基盤が運用されている。"
+    },
+    {
+      "id": "dashboards-as-code",
+      "axis": "A1",
+      "hint_level": 3,
+      "title": "ダッシュボードのコード管理（Grafana JSON / Terraform / Jsonnet）",
+      "paths": [
+        "**/dashboards/**/*.json",
+        "**/grafana/**/*.json",
+        "**/grafana/provisioning/**",
+        "**/*.dashboard.json",
+        "**/*dashboard*.jsonnet",
+        "**/*dashboard*.libsonnet"
+      ],
+      "content": [
+        "resource\\s+\"(grafana_dashboard|datadog_dashboard|aws_cloudwatch_dashboard|newrelic_one_dashboard|google_monitoring_dashboard)\"",
+        "\"panels\"\\s*:",
+        "grafonnet"
+      ],
+      "content_paths": [
+        "**/*.tf",
+        "**/*.json",
+        "**/*.jsonnet",
+        "**/*.libsonnet"
+      ],
+      "why": "可視化が共通テンプレートとして再現可能に管理されている（レベル3の『共通テンプレート』に対応）。"
+    },
+    {
+      "id": "data-quality-monitoring",
+      "axis": "A1",
+      "hint_level": 4,
+      "title": "収集データ自体の品質監視（欠損検知・エージェント死活・収集率）",
+      "content": [
+        "absent\\(",
+        "absent_over_time",
+        "up\\s*==\\s*0",
+        "no[ _-]?data",
+        "notify_no_data",
+        "agent.*(heartbeat|health|liveness)",
+        "scrape_(duration|samples)",
+        "収集率",
+        "欠損"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.md",
+        "**/*.rules"
+      ],
+      "why": "データ収集プロセスそのものが監視・測定の対象になっている（レベル3→4 の活用アクション）。"
+    },
+    {
+      "id": "monitoring-kpi-docs",
+      "axis": "A1",
+      "hint_level": 4,
+      "title": "監視の精度・検出遅延を KPI として扱うドキュメント",
+      "content": [
+        "誤検知率",
+        "見逃し率",
+        "検知遅延",
+        "検出遅延",
+        "false[ _-]?positive[ _-]?rate",
+        "false[ _-]?negative",
+        "detection[ _-]?latency",
+        "time[ _-]?to[ _-]?detect",
+        "MTTD"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.txt"
+      ],
+      "why": "監視の品質が定量的に評価・改善されている。"
+    },
+    {
+      "id": "aiops-forecast",
+      "axis": "A1",
+      "hint_level": 5,
+      "title": "予測分析・最適化の自動実行（容量予測、トラフィック予測、設定自動更新）",
+      "content": [
+        "forecast\\(",
+        "predict_linear\\(",
+        "holt_winters",
+        "capacity[ _-]?planning.*(auto|model)",
+        "トラフィック予測",
+        "予測分析",
+        "auto[ _-]?tun(e|ing).*(alert|threshold|dashboard)"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.md",
+        "**/*.py",
+        "**/*.rules"
+      ],
+      "why": "予測に基づく自律的な改善が仕組み化されている可能性がある。導入初期の実験と区別する必要がある。"
+    },
+    {
+      "id": "health-probes",
+      "axis": "A2",
+      "hint_level": 2,
+      "title": "ヘルスチェック / Liveness・Readiness プローブ",
+      "content": [
+        "livenessProbe",
+        "readinessProbe",
+        "startupProbe",
+        "/healthz",
+        "/health\\b",
+        "/ready\\b",
+        "HEALTHCHECK",
+        "health_check"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/Dockerfile*",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.go",
+        "**/*.py",
+        "**/*.js",
+        "**/*.ts",
+        "**/*.java",
+        "**/*.rb"
+      ],
+      "why": "可用性を機械的に確認する最低限の仕組みがある。"
+    },
+    {
+      "id": "incident-process-docs",
+      "axis": "A2",
+      "hint_level": 2,
+      "title": "インシデント対応手順・エスカレーション文書",
+      "paths": [
+        "**/INCIDENT*",
+        "**/incident*",
+        "**/ONCALL*",
+        "**/oncall*",
+        "**/on-call*",
+        "**/escalation*",
+        "**/障害対応*",
+        "**/インシデント*"
+      ],
+      "content": [
+        "エスカレーション",
+        "一次対応",
+        "incident (response|management) (process|flow|procedure)",
+        "escalation (path|policy)",
+        "on-?call (rotation|schedule)"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.txt"
+      ],
+      "why": "障害対応が個人の経験ではなく手順として明文化されている。"
+    },
+    {
+      "id": "runbooks",
+      "axis": "A2",
+      "hint_level": 3,
+      "title": "ランブック / プレイブック",
+      "paths": [
+        "**/runbook*/**",
+        "**/runbooks/**",
+        "**/playbook*/**",
+        "**/playbooks/**",
+        "**/RUNBOOK*",
+        "**/*runbook*.md",
+        "**/*playbook*.md"
+      ],
+      "content": [
+        "runbook_url",
+        "runbook:",
+        "プレイブック",
+        "ランブック"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.md",
+        "**/*.tf",
+        "**/*.rules",
+        "**/*.json"
+      ],
+      "why": "対応手順が標準化され、アラートと紐づけて参照できる。"
+    },
+    {
+      "id": "postmortems",
+      "axis": "A2",
+      "hint_level": 3,
+      "title": "ポストモーテム（事後レビュー）文書・テンプレート",
+      "paths": [
+        "**/postmortem*/**",
+        "**/post-mortem*/**",
+        "**/postmortems/**",
+        "**/*postmortem*.md",
+        "**/*post-mortem*.md",
+        "**/incident-report*/**",
+        "**/ポストモーテム*",
+        "**/障害報告*"
+      ],
+      "content": [
+        "postmortem",
+        "post-mortem",
+        "ポストモーテム",
+        "blameless",
+        "root cause analysis",
+        "再発防止策",
+        "timeline of (the )?incident"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.txt",
+        "**/.github/ISSUE_TEMPLATE/*"
+      ],
+      "why": "インシデントの振り返りと再発防止が仕組みとして運用されている。"
+    },
+    {
+      "id": "slo-definitions",
+      "axis": "A2",
+      "hint_level": 3,
+      "title": "SLI/SLO 定義（OpenSLO / Sloth / Nobl9 / Datadog SLO / Terraform）",
+      "paths": [
+        "**/slo*.y*ml",
+        "**/slos/**",
+        "**/sli*.y*ml",
+        "**/*.slo.y*ml",
+        "**/openslo/**"
+      ],
+      "content": [
+        "apiVersion:\\s*openslo",
+        "kind:\\s*(SLO|PrometheusServiceLevel|ServiceLevelObjective)",
+        "resource\\s+\"(datadog_service_level_objective|newrelic_service_level|google_monitoring_slo|honeycombio_slo)\"",
+        "(?-i:\\bSLOs?\\b)",
+        "(?-i:\\bSLIs?\\b)",
+        "error[ _-]?budget",
+        "エラーバジェット",
+        "サービスレベル目標"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.md"
+      ],
+      "why": "可用性・エラーレート等の信頼性指標に基準値が設定されている（レベル3）。"
+    },
+    {
+      "id": "risk-register",
+      "axis": "A2",
+      "hint_level": 3,
+      "title": "システムリスク要因の一覧・評価基準",
+      "paths": [
+        "**/risk*register*",
+        "**/risks.md",
+        "**/RISKS*",
+        "**/リスク*"
+      ],
+      "content": [
+        "risk register",
+        "リスク一覧",
+        "リスク要因",
+        "single point of failure",
+        "単一障害点",
+        "risk (matrix|assessment)"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.csv"
+      ],
+      "why": "リスク要因の優先順位付けと改善計画の存在を示す（レベル2→3 改善アクション）。"
+    },
+    {
+      "id": "reliability-gates-ci",
+      "axis": "A2",
+      "hint_level": 4,
+      "title": "CI/CD への信頼性チェック組み込み（負荷試験・合成監視・品質ゲート）",
+      "content": [
+        "\\bk6\\b",
+        "grafana/k6",
+        "locust",
+        "gatling",
+        "artillery",
+        "vegeta",
+        "wrk2?\\b",
+        "synthetic",
+        "smoke[ _-]?test",
+        "quality[ _-]?gate",
+        "canary[ _-]?analysis",
+        "kayenta"
+      ],
+      "content_paths": [
+        "**/.github/workflows/*.y*ml",
+        "**/.gitlab-ci.yml",
+        "**/Jenkinsfile*",
+        "**/.circleci/*.y*ml",
+        "**/azure-pipelines*.y*ml",
+        "**/bitbucket-pipelines.yml",
+        "**/.buildkite/**",
+        "**/*.tf",
+        "$DEPS",
+        "**/Makefile",
+        "**/Taskfile*.y*ml"
+      ],
+      "why": "リリース前後に信頼性を自動検証している（レベル3→4 活用アクション）。"
+    },
+    {
+      "id": "chaos-engineering",
+      "axis": "A2",
+      "hint_level": 4,
+      "title": "カオスエンジニアリング / 障害注入",
+      "content": [
+        "chaos[ _-]?mesh",
+        "litmus",
+        "gremlin",
+        "chaos[ _-]?monkey",
+        "fault[ _-]?injection",
+        "aws-fis",
+        "fis_experiment",
+        "toxiproxy",
+        "chaostoolkit"
+      ],
+      "why": "弱点を能動的に検証し予兆・影響を評価している。"
+    },
+    {
+      "id": "auto-remediation-reliability",
+      "axis": "A2",
+      "hint_level": 5,
+      "title": "障害予兆からの自動復旧（自己修復・自動ロールバック・自動スケール連動）",
+      "content": [
+        "auto[ _-]?remediat",
+        "self[ _-]?heal",
+        "auto[ _-]?rollback",
+        "automated rollback",
+        "ssm_automation|aws_ssm_document",
+        "stackstorm",
+        "rundeck",
+        "自動復旧",
+        "自動ロールバック",
+        "自己修復"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.md",
+        "**/*.py",
+        "**/*.go",
+        "**/*.sh"
+      ],
+      "why": "人的介入なしに復旧処理が実行される仕組みの存在を示す。実運用かどうかの確認が必須。"
+    },
+    {
+      "id": "ci-pipeline",
+      "axis": "A3",
+      "hint_level": 2,
+      "title": "CI パイプライン定義",
+      "paths": [
+        ".github/workflows/*.y*ml",
+        ".gitlab-ci.yml",
+        "Jenkinsfile*",
+        ".circleci/config.yml",
+        "azure-pipelines*.y*ml",
+        "bitbucket-pipelines.yml",
+        ".buildkite/**",
+        ".travis.yml",
+        "cloudbuild.y*ml",
+        "buildspec.y*ml",
+        ".drone.yml",
+        ".woodpecker*.y*ml",
+        "**/.tekton/**",
+        "**/argo-workflows/**"
+      ],
+      "why": "ビルド・テストが継続的に自動実行される（レベル2〜3）。",
+      "content": []
+    },
+    {
+      "id": "static-analysis",
+      "axis": "A3",
+      "hint_level": 2,
+      "title": "静的解析・リンタ設定",
+      "paths": [
+        ".eslintrc*",
+        "eslint.config.*",
+        ".golangci.y*ml",
+        ".golangci.toml",
+        "ruff.toml",
+        ".ruff.toml",
+        ".flake8",
+        ".pylintrc",
+        "mypy.ini",
+        ".mypy.ini",
+        "sonar-project.properties",
+        "checkstyle*.xml",
+        ".rubocop.yml",
+        ".editorconfig",
+        "biome.json",
+        ".prettierrc*",
+        "tslint.json",
+        "pmd*.xml",
+        "spotbugs*.xml",
+        ".stylelintrc*",
+        "clippy.toml",
+        "detekt*.yml",
+        ".swiftlint.yml",
+        "phpstan.neon*",
+        ".php-cs-fixer*"
+      ],
+      "content": [
+        "\\[tool\\.ruff\\]",
+        "\\[tool\\.mypy\\]",
+        "\\[tool\\.black\\]",
+        "\"lint\"\\s*:",
+        "golangci-lint",
+        "sonarqube|sonarcloud",
+        "codeql"
+      ],
+      "content_paths": [
+        "pyproject.toml",
+        "package.json",
+        "setup.cfg",
+        "**/.github/workflows/*.y*ml",
+        "Makefile"
+      ],
+      "why": "コード品質の基本的な問題検出が自動化されている（レベル1→2 改善アクション）。"
+    },
+    {
+      "id": "code-review-process",
+      "axis": "A3",
+      "hint_level": 2,
+      "title": "コードレビュー体制（CODEOWNERS / PR テンプレート / ブランチ保護設定）",
+      "paths": [
+        "CODEOWNERS",
+        ".github/CODEOWNERS",
+        "docs/CODEOWNERS",
+        ".github/PULL_REQUEST_TEMPLATE*",
+        ".github/pull_request_template*",
+        ".gitlab/merge_request_templates/**",
+        "PULL_REQUEST_TEMPLATE*",
+        ".github/settings.yml"
+      ],
+      "content": [
+        "required_pull_request_reviews",
+        "required_approving_review_count",
+        "branch[ _-]?protection"
+      ],
+      "content_paths": [
+        "**/*.tf",
+        "**/.github/settings.yml"
+      ],
+      "why": "レビューが属人的ではなく体制として定義されている。"
+    },
+    {
+      "id": "automated-tests",
+      "axis": "A3",
+      "hint_level": 2,
+      "title": "自動テスト（テストディレクトリ・テストフレームワーク）",
+      "paths": [
+        "test/**",
+        "tests/**",
+        "spec/**",
+        "__tests__/**",
+        "**/*_test.go",
+        "**/*_test.py",
+        "**/test_*.py",
+        "**/*.test.[jt]s",
+        "**/*.test.[jt]sx",
+        "**/*.spec.[jt]s",
+        "**/*Test.java",
+        "**/*Tests.cs",
+        "**/*_spec.rb",
+        "**/*_test.rb",
+        "**/*.test.tsx",
+        "**/*_test.rs"
+      ],
+      "content": [
+        "\\bjest\\b",
+        "vitest",
+        "mocha",
+        "pytest",
+        "unittest",
+        "junit",
+        "testify",
+        "rspec",
+        "minitest",
+        "xunit",
+        "nunit",
+        "cypress",
+        "playwright",
+        "selenium"
+      ],
+      "content_paths": [
+        "$DEPS"
+      ],
+      "why": "再現可能な品質確認がある。CI からの呼び出し有無で L2/L3 を切り分ける。"
+    },
+    {
+      "id": "cd-pipeline",
+      "axis": "A3",
+      "hint_level": 3,
+      "title": "継続的デリバリー / デプロイ自動化（ArgoCD / Flux / deploy ジョブ / ステージング環境）",
+      "paths": [
+        "**/argocd/**",
+        "**/argo-cd/**",
+        "**/flux/**",
+        "**/flux-system/**",
+        "**/clusters/**/kustomization.y*ml",
+        "**/helmfile.y*ml",
+        "**/skaffold.y*ml",
+        "**/deploy*.y*ml",
+        "**/release*.y*ml",
+        "**/environments/**",
+        "**/envs/**",
+        "**/overlays/**",
+        "**/staging/**",
+        "**/stg/**",
+        "**/production/**",
+        "**/prod/**",
+        "Procfile",
+        "fly.toml",
+        "render.yaml",
+        "vercel.json",
+        "netlify.toml",
+        "serverless.y*ml",
+        "**/*.tf"
+      ],
+      "content": [
+        "kind:\\s*Application\\b",
+        "kind:\\s*Kustomization\\b",
+        "kind:\\s*HelmRelease\\b",
+        "environment:\\s*(staging|production|stg|prod)",
+        "deploy(ment)?[ _-]?to[ _-]?(staging|production|stg|prod)",
+        "aws (ecs|lambda|eks|cloudformation) deploy",
+        "gcloud (run|app) deploy",
+        "kubectl (apply|rollout)",
+        "helm (upgrade|install)",
+        "terraform (apply|plan)",
+        "pulumi up",
+        "cdk deploy"
+      ],
+      "content_paths": [
+        "**/.github/workflows/*.y*ml",
+        "**/.gitlab-ci.yml",
+        "**/Jenkinsfile*",
+        "**/.circleci/*.y*ml",
+        "**/azure-pipelines*.y*ml",
+        "**/bitbucket-pipelines.yml",
+        "**/.buildkite/**",
+        "**/*.y*ml",
+        "Makefile",
+        "**/Taskfile*.y*ml",
+        "**/*.sh"
+      ],
+      "why": "ステージング環境と自動デプロイで本番安定性を確保している（レベル3）。"
+    },
+    {
+      "id": "iac",
+      "axis": "A3",
+      "hint_level": 3,
+      "title": "Infrastructure as Code（Terraform / Pulumi / CDK / CloudFormation / Ansible）",
+      "paths": [
+        "**/*.tf",
+        "**/Pulumi.y*ml",
+        "**/cdk.json",
+        "**/template.y*ml",
+        "**/*.template.json",
+        "**/ansible/**",
+        "**/playbook.y*ml",
+        "**/*.bicep",
+        "**/Chart.yaml",
+        "**/kustomization.y*ml"
+      ],
+      "why": "環境構成が再現可能で、誰が作業しても一定品質が保たれる基盤。",
+      "content": []
+    },
+    {
+      "id": "dependency-automation",
+      "axis": "A3",
+      "hint_level": 3,
+      "title": "依存関係更新の自動化（Dependabot / Renovate）",
+      "paths": [
+        ".github/dependabot.y*ml",
+        "renovate.json*",
+        ".renovaterc*",
+        ".github/renovate.json*"
+      ],
+      "why": "保守作業がプロセスとして自動化されている。",
+      "content": []
+    },
+    {
+      "id": "release-automation",
+      "axis": "A3",
+      "hint_level": 3,
+      "title": "リリース自動化（semantic-release / release-please / goreleaser / changesets）",
+      "paths": [
+        ".releaserc*",
+        "release.config.*",
+        ".goreleaser.y*ml",
+        "release-please-config.json",
+        ".changeset/**",
+        "CHANGELOG.md",
+        "CHANGELOG*",
+        "**/.release-please-manifest.json"
+      ],
+      "content": [
+        "semantic-release",
+        "release-please",
+        "goreleaser",
+        "changesets",
+        "conventional[ _-]?commits",
+        "commitlint"
+      ],
+      "content_paths": [
+        "$DEPS",
+        "**/.github/workflows/*.y*ml"
+      ],
+      "why": "リリースが一定の手順で再現可能に実行されている。"
+    },
+    {
+      "id": "coverage-thresholds",
+      "axis": "A3",
+      "hint_level": 4,
+      "title": "コードカバレッジ閾値・品質 KPI の自動判定",
+      "paths": [
+        "codecov.y*ml",
+        ".codecov.y*ml",
+        ".coveragerc",
+        "coverage.xml",
+        "**/.nycrc*",
+        "**/jacoco*.xml",
+        "sonar-project.properties"
+      ],
+      "content": [
+        "coverageThreshold",
+        "fail_under",
+        "--cov-fail-under",
+        "minimum[ _-]?coverage",
+        "coverage:\\s*\\n\\s*status",
+        "sonar\\.coverage",
+        "codecov",
+        "coveralls",
+        "codeclimate"
+      ],
+      "content_paths": [
+        "package.json",
+        "pyproject.toml",
+        "setup.cfg",
+        "**/*.y*ml",
+        "**/*.toml",
+        "**/*.gradle*",
+        "pom.xml",
+        "**/.github/workflows/*.y*ml"
+      ],
+      "why": "コード品質を KPI として定量的に測定し判定に用いている（レベル4）。"
+    },
+    {
+      "id": "progressive-delivery",
+      "axis": "A3",
+      "hint_level": 4,
+      "title": "プログレッシブデリバリー / フィーチャーフラグ（Canary・Blue-Green・Argo Rollouts・Flagger）",
+      "content": [
+        "kind:\\s*Rollout\\b",
+        "argo-rollouts",
+        "flagger",
+        "kind:\\s*Canary\\b",
+        "canary",
+        "blue[ _-]?green",
+        "launchdarkly",
+        "unleash",
+        "flagsmith",
+        "split\\.io",
+        "openfeature",
+        "feature[ _-]?flag",
+        "statsig",
+        "growthbook"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "$DEPS",
+        "**/*.md"
+      ],
+      "why": "リリース後の影響を限定しつつ即時分析・ロールバックできる（レベル4）。"
+    },
+    {
+      "id": "dora-metrics",
+      "axis": "A3",
+      "hint_level": 4,
+      "title": "デリバリー指標の計測（DORA / Four Keys / デプロイ頻度・変更失敗率）",
+      "content": [
+        "(?-i:\\bDORA\\b)",
+        "four[ _-]?keys",
+        "deployment[ _-]?frequency",
+        "lead[ _-]?time[ _-]?for[ _-]?changes",
+        "change[ _-]?failure[ _-]?rate",
+        "デプロイ頻度",
+        "変更失敗率",
+        "リードタイム",
+        "sleuth",
+        "linearb",
+        "swarmia",
+        "dx\\.community",
+        "jellyfish"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.sql",
+        "**/*.py"
+      ],
+      "why": "リリースの結果を KPI として定量的に測定している（レベル4）。"
+    },
+    {
+      "id": "ai-code-review",
+      "axis": "A3",
+      "hint_level": 5,
+      "title": "AI によるコード解析・変更影響分析・リリース判定",
+      "content": [
+        "coderabbit",
+        "copilot[ _-]?(review|autofix)",
+        "code[ _-]?review[ _-]?(bot|ai)",
+        "ai[ _-]?review",
+        "変更影響分析",
+        "impact[ _-]?analysis.*(auto|ai|ml)",
+        "claude-code-action",
+        "anthropics/claude-code-action",
+        "openai.*review",
+        "gemini[ _-]?code[ _-]?assist",
+        "qodo",
+        "sourcery",
+        "snyk",
+        "codeql"
+      ],
+      "content_paths": [
+        "**/.github/workflows/*.y*ml",
+        "**/.gitlab-ci.yml",
+        "**/*.md",
+        ".coderabbit.y*ml",
+        "**/*.toml"
+      ],
+      "why": "レビュー〜デプロイ判断の自動化の存在を示す。レベル5判定には『リリース可否の自動判断』まで確認が必要。"
+    },
+    {
+      "id": "alert-rules",
+      "axis": "A4",
+      "hint_level": 2,
+      "title": "アラートルール定義（Prometheus / Datadog Monitor / CloudWatch Alarm / Grafana Alerting）",
+      "paths": [
+        "**/alert*.y*ml",
+        "**/alerts/**",
+        "**/alerting/**",
+        "**/*.rules",
+        "**/*.rules.y*ml",
+        "**/monitors/**",
+        "**/monitor*.y*ml",
+        "**/monitor*.tf",
+        "**/alarm*.tf",
+        "**/alarms/**"
+      ],
+      "content": [
+        "^\\s*-\\s*alert:\\s*\\S+",
+        "kind:\\s*PrometheusRule",
+        "resource\\s+\"(datadog_monitor|aws_cloudwatch_metric_alarm|google_monitoring_alert_policy|newrelic_nrql_alert_condition|grafana_rule_group|azurerm_monitor_metric_alert|honeycombio_trigger)\"",
+        "alert_rule",
+        "notification_channel"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.rules"
+      ],
+      "why": "アラートが定義として管理されている（レベル2 の棚卸し・整理の前提）。"
+    },
+    {
+      "id": "alert-severity",
+      "axis": "A4",
+      "hint_level": 2,
+      "title": "重要度 / 深刻度分類（severity・SEV・P1〜P4）",
+      "content": [
+        "severity:\\s*(critical|warning|info|page|ticket|high|medium|low|sev\\d)",
+        "(?-i:\\bSEV-?\\s?[0-4]\\b)",
+        "(?-i:\\bP[0-4]\\b).*(incident|alert|障害)",
+        "priority:\\s*(P[0-4]|high|medium|low)",
+        "深刻度",
+        "重要度分類"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.md",
+        "**/*.rules"
+      ],
+      "why": "アラートの重要度と対応優先度が整理されている（レベル1→2 改善アクション）。"
+    },
+    {
+      "id": "alert-routing",
+      "axis": "A4",
+      "hint_level": 2,
+      "title": "通知ルーティング / オンコール連携（Alertmanager / PagerDuty / Opsgenie / Slack）",
+      "paths": [
+        "**/alertmanager*.y*ml",
+        "**/alertmanager/**",
+        "**/pagerduty*",
+        "**/opsgenie*"
+      ],
+      "content": [
+        "pagerduty",
+        "opsgenie",
+        "victorops|splunk on-call",
+        "incident\\.io",
+        "squadcast",
+        "escalation_policy",
+        "slack_configs",
+        "webhook_configs"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "$DEPS"
+      ],
+      "why": "通知先と担当者へのエスカレーションが定義されている。"
+    },
+    {
+      "id": "alert-runbook-links",
+      "axis": "A4",
+      "hint_level": 3,
+      "title": "アラートと初動対応手順の紐づけ（runbook_url / dashboard リンク）",
+      "content": [
+        "runbook_url",
+        "runbook:\\s*http",
+        "dashboard_url",
+        "playbook_url",
+        "annotations:\\s*\\n(.*\\n){0,5}.*(runbook|dashboard|playbook)",
+        "初動対応"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.rules",
+        "**/*.md"
+      ],
+      "why": "アラート発生時に確認すべき情報セットが標準化されている（レベル2→3 改善アクション）。"
+    },
+    {
+      "id": "dynamic-thresholds",
+      "axis": "A4",
+      "hint_level": 3,
+      "title": "動的しきい値 / 異常検知アラート",
+      "content": [
+        "anomalies\\(",
+        "outliers\\(",
+        "forecast\\(",
+        "predict_linear\\(",
+        "holt_winters\\(",
+        "stddev_over_time",
+        "z-?score",
+        "anomaly[ _-]?detect",
+        "AnomalyDetector|anomaly_detection",
+        "ANOMALY_DETECTION_BAND",
+        "baseline",
+        "動的しきい値",
+        "異常検知"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.rules",
+        "**/*.md"
+      ],
+      "why": "固定しきい値から脱し、通常変動を学習する検知を導入している（レベル3）。"
+    },
+    {
+      "id": "alert-review-process",
+      "axis": "A4",
+      "hint_level": 3,
+      "title": "アラートレビュー / 棚卸しの運用記録",
+      "content": [
+        "alert[ _-]?review",
+        "alert[ _-]?(audit|hygiene|inventory|fatigue)",
+        "アラートレビュー",
+        "アラート棚卸",
+        "ノイズ削減",
+        "noisy alert",
+        "alert (noise|volume) (reduction|budget)"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.txt",
+        "**/*.csv"
+      ],
+      "why": "アラート精度を継続的に見直す仕組みがある（レベル2→3 活用アクション）。"
+    },
+    {
+      "id": "sev-escalation-flow",
+      "axis": "A4",
+      "hint_level": 4,
+      "title": "深刻度別の対応フロー・即時エスカレーション体制（SEV-1 対応）",
+      "content": [
+        "SEV-?1.*(即時|immediate|page|escalat)",
+        "incident[ _-]?commander",
+        "インシデントコマンダー",
+        "war[ _-]?room",
+        "severity (matrix|levels?) .*(response|対応)",
+        "深刻度.*(対応フロー|エスカレーション)"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.y*ml",
+        "**/*.tf"
+      ],
+      "why": "深刻度に応じた対応フローが明文化されている（レベル3→4 改善アクション）。"
+    },
+    {
+      "id": "ai-alert-prioritization",
+      "axis": "A4",
+      "hint_level": 4,
+      "title": "AI / 相関分析によるアラート優先度付け・ノイズ抑制",
+      "content": [
+        "alert[ _-]?(correlation|grouping|dedup)",
+        "event[ _-]?correlation",
+        "aiops",
+        "bigpanda",
+        "moogsoft",
+        "watchdog",
+        "alert[ _-]?intelligence",
+        "noise[ _-]?reduction",
+        "incident[ _-]?intelligence"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.md",
+        "$DEPS"
+      ],
+      "why": "履歴と影響度に基づく優先度付けと自動チューニングの存在を示す（レベル4）。"
+    },
+    {
+      "id": "auto-remediation-alerts",
+      "axis": "A4",
+      "hint_level": 5,
+      "title": "アラート起点の自動対処（イベント駆動の対処アクション実行）",
+      "content": [
+        "auto[ _-]?(remediat|heal|scal).*(alert|alarm|trigger)",
+        "alarm_actions\\s*=",
+        "ok_actions\\s*=",
+        "on_alert.*(run|execute|invoke)",
+        "webhook.*(remediat|rollback|scale)",
+        "自動対処",
+        "自己回復"
+      ],
+      "content_paths": [
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.json",
+        "**/*.md",
+        "**/*.py",
+        "**/*.sh"
+      ],
+      "why": "検知から対処まで人手を介さず完結する仕組みの存在を示す。対象範囲の確認が必須。"
+    },
+    {
+      "id": "web-analytics-sdk",
+      "axis": "A5",
+      "hint_level": 2,
+      "title": "Web / アプリ解析 SDK（GA4 / Firebase / Segment / Amplitude / Mixpanel / PostHog 等）",
+      "content": [
+        "gtag\\(",
+        "googletagmanager",
+        "(?-i:\\bG-[A-Z0-9]{8,}\\b)",
+        "(?-i:\\bUA-\\d{4,}-\\d+\\b)",
+        "firebase[/_-]?analytics",
+        "@segment/analytics",
+        "analytics-node",
+        "rudderstack|rudder-sdk",
+        "amplitude",
+        "mixpanel",
+        "posthog",
+        "heap-analytics|heapanalytics",
+        "snowplow",
+        "matomo|piwik",
+        "adobe[ _-]?analytics",
+        "appsflyer",
+        "adjust-sdk",
+        "karte",
+        "treasure data|td-js-sdk"
+      ],
+      "content_paths": [
+        "$DEPS",
+        "**/*.html",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.vue",
+        "**/*.svelte",
+        "**/*.dart",
+        "**/*.swift",
+        "**/*.kt",
+        "**/*.py",
+        "**/*.rb",
+        "**/*.go",
+        "**/*.y*ml",
+        "**/*.env*"
+      ],
+      "why": "基本的な行動データ（PV・UU 等）を収集している（レベル2）。"
+    },
+    {
+      "id": "rum",
+      "axis": "A5",
+      "hint_level": 2,
+      "title": "リアルユーザーモニタリング（RUM / ブラウザ・モバイル監視）",
+      "content": [
+        "@datadog/browser-rum",
+        "datadogRum",
+        "newrelic[ _-]?browser",
+        "@sentry/(browser|react|nextjs|vue|react-native)",
+        "web-vitals",
+        "@opentelemetry/sdk-trace-web",
+        "elastic-apm-rum",
+        "dynatrace.*rum",
+        "logrocket",
+        "fullstory",
+        "hotjar",
+        "clarity\\.ms",
+        "smartlook"
+      ],
+      "content_paths": [
+        "$DEPS",
+        "**/*.html",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.vue"
+      ],
+      "why": "実利用者側の体験・挙動を観測している。"
+    },
+    {
+      "id": "event-tracking-plan",
+      "axis": "A5",
+      "hint_level": 3,
+      "title": "イベント設計 / トラッキングプラン / 計測仕様書",
+      "paths": [
+        "**/tracking[ _-]?plan*",
+        "**/analytics/**/*.md",
+        "**/events.y*ml",
+        "**/event[ _-]?taxonomy*",
+        "**/計測仕様*",
+        "**/イベント設計*"
+      ],
+      "content": [
+        "tracking plan",
+        "event taxonomy",
+        "計測仕様",
+        "イベント設計",
+        "track\\((['\"])[A-Za-z_ ]+\\1",
+        "logEvent\\(",
+        "analytics\\.track",
+        "posthog\\.capture",
+        "mixpanel\\.track",
+        "amplitude\\.(track|logEvent)"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.y*ml",
+        "**/*.json",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.vue",
+        "**/*.dart",
+        "**/*.swift",
+        "**/*.kt"
+      ],
+      "why": "行動データが設計された KPI として一貫して収集されている（レベル3）。"
+    },
+    {
+      "id": "product-kpi-docs",
+      "axis": "A5",
+      "hint_level": 3,
+      "title": "プロダクト KPI 定義（コンバージョン・リテンション・DAU/WAU/MAU・ユーザーフロー）",
+      "content": [
+        "(?-i:\\b(DAU|WAU|MAU)\\b)",
+        "retention[ _-]?rate",
+        "conversion[ _-]?rate",
+        "リテンション",
+        "コンバージョン",
+        "継続率",
+        "離脱率",
+        "churn",
+        "funnel",
+        "ファネル",
+        "critical user journey",
+        "クリティカルユーザージャーニー",
+        "north[ _-]?star[ _-]?metric"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.sql",
+        "**/*.y*ml",
+        "**/*.json"
+      ],
+      "why": "行動データが継続的な機能改善の KPI として扱われている（レベル3）。"
+    },
+    {
+      "id": "experimentation",
+      "axis": "A5",
+      "hint_level": 4,
+      "title": "A/B テスト・実験基盤",
+      "content": [
+        "a/?b[ _-]?test",
+        "experiment(ation)?[ _-]?(platform|sdk|flag)",
+        "optimizely",
+        "growthbook",
+        "statsig",
+        "eppo",
+        "vwo",
+        "split\\.io",
+        "launchdarkly.*experiment",
+        "firebase.*remote[ _-]?config",
+        "variant[ _-]?assignment",
+        "ABテスト"
+      ],
+      "content_paths": [
+        "$DEPS",
+        "**/*.md",
+        "**/*.y*ml",
+        "**/*.json",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.py",
+        "**/*.go",
+        "**/*.kt",
+        "**/*.swift"
+      ],
+      "why": "施策の効果を定量検証する基盤がある。L4/L5 判定の補助。"
+    },
+    {
+      "id": "personalization-ml",
+      "axis": "A5",
+      "hint_level": 4,
+      "title": "パーソナライズ / レコメンデーション / 行動予測モデル",
+      "content": [
+        "recommend(ation|er)[ _-]?(engine|system|model|service)",
+        "personaliz",
+        "パーソナライズ",
+        "レコメンド",
+        "collaborative[ _-]?filtering",
+        "churn[ _-]?predict",
+        "propensity",
+        "aws[ _-]?personalize",
+        "recommendations[ _-]?ai",
+        "vertex[ _-]?ai.*recommend",
+        "feature[ _-]?store"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.py",
+        "**/*.go",
+        "**/*.java",
+        "**/*.scala",
+        "**/*.y*ml",
+        "**/*.tf",
+        "**/*.sql",
+        "$DEPS"
+      ],
+      "why": "機械学習で行動を分類・予測し体験を動的に最適化している（レベル4）。"
+    },
+    {
+      "id": "automated-ux-optimization",
+      "axis": "A5",
+      "hint_level": 5,
+      "title": "分析→施策適用の自動化（自動配信・多腕バンディット・自動ロールアウト）",
+      "content": [
+        "multi[ _-]?armed[ _-]?bandit",
+        "bandit",
+        "auto[ _-]?(allocat|rollout|promot).*(variant|experiment|winner)",
+        "contextual[ _-]?bandit",
+        "always[ _-]?on[ _-]?experiment",
+        "自動最適化.*(UI|体験|配信)"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.py",
+        "**/*.go",
+        "**/*.java",
+        "**/*.y*ml",
+        "**/*.json",
+        "$DEPS"
+      ],
+      "why": "改善提案から施策適用までのフィードバックループが自動化されている可能性（レベル5）。"
+    },
+    {
+      "id": "retrospectives",
+      "axis": "A6",
+      "hint_level": 2,
+      "title": "ふりかえり / レトロスペクティブの記録",
+      "paths": [
+        "**/retro*/**",
+        "**/retrospective*/**",
+        "**/*retro*.md",
+        "**/ふりかえり*",
+        "**/振り返り*",
+        "**/KPT*"
+      ],
+      "content": [
+        "retrospective",
+        "(?-i:\\bKPT\\b)",
+        "ふりかえり",
+        "振り返り",
+        "what went well",
+        "lessons learned",
+        "教訓"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.txt"
+      ],
+      "why": "課題と改善点をチームで共有する文化の証跡（レベル2）。"
+    },
+    {
+      "id": "adr",
+      "axis": "A6",
+      "hint_level": 3,
+      "title": "Architecture Decision Records（意思決定の記録）",
+      "paths": [
+        "**/adr/**",
+        "**/adrs/**",
+        "**/decisions/**",
+        "**/architecture-decisions/**",
+        "**/ADR-*.md",
+        "**/[0-9][0-9][0-9][0-9]-*.md"
+      ],
+      "content": [
+        "architecture decision record",
+        "^#+\\s*(Status|Context|Decision|Consequences)\\s*$",
+        "## 決定",
+        "## 背景"
+      ],
+      "content_paths": [
+        "**/*.md"
+      ],
+      "why": "判断と知見が蓄積・共有され、同じ議論を繰り返さない仕組み。"
+    },
+    {
+      "id": "action-item-tracking",
+      "axis": "A6",
+      "hint_level": 3,
+      "title": "改善アクションの追跡（アクションアイテム・改善バックログ・Issue テンプレート）",
+      "paths": [
+        ".github/ISSUE_TEMPLATE/**",
+        ".gitlab/issue_templates/**",
+        "**/backlog*.md",
+        "**/improvement*/**",
+        "**/改善*"
+      ],
+      "content": [
+        "action[ _-]?items?",
+        "アクションアイテム",
+        "改善バックログ",
+        "follow[ _-]?up(s)?:",
+        "owner:.*due",
+        "期限.*担当"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.y*ml"
+      ],
+      "why": "振り返り結果が具体的なアクションに落ち、追跡されている（レベル2→3）。"
+    },
+    {
+      "id": "engineering-metrics",
+      "axis": "A6",
+      "hint_level": 3,
+      "title": "開発・運用指標の可視化（開発速度・バグ修正率・デプロイ頻度・MTTR）",
+      "content": [
+        "(?-i:\\bMTTR\\b)",
+        "(?-i:\\bMTBF\\b)",
+        "(?-i:\\bMTTD\\b)",
+        "復旧時間",
+        "障害検知時間",
+        "リリース成功率",
+        "bug[ _-]?fix[ _-]?rate",
+        "cycle[ _-]?time",
+        "velocity",
+        "engineering[ _-]?metrics",
+        "team[ _-]?health"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.y*ml",
+        "**/*.json",
+        "**/*.sql",
+        "**/*.csv"
+      ],
+      "why": "改善の成果を定量的に測定する体制の証跡（レベル3）。"
+    },
+    {
+      "id": "knowledge-base",
+      "axis": "A6",
+      "hint_level": 3,
+      "title": "ナレッジ蓄積・ドキュメントサイト（docs サイト、Wiki、ハンドブック）",
+      "paths": [
+        "mkdocs.y*ml",
+        "docusaurus.config.*",
+        "docs/_config.yml",
+        "_config.yml",
+        "book.toml",
+        "antora*.yml",
+        "**/handbook/**",
+        "**/wiki/**",
+        "docs/**/*.md",
+        "doc/**/*.md"
+      ],
+      "why": "知見が属人化せず参照可能な形で蓄積されている。量と更新頻度を併せて確認する。",
+      "content": []
+    },
+    {
+      "id": "improvement-governance",
+      "axis": "A6",
+      "hint_level": 4,
+      "title": "改善サイクル（PDCA / OKR / 月次レビュー）の計測と制御",
+      "content": [
+        "(?-i:\\bPDCA\\b)",
+        "(?-i:\\bOKRs?\\b)",
+        "monthly[ _-]?review",
+        "月次レビュー",
+        "improvement[ _-]?(cycle|roadmap|program)",
+        "改善ロードマップ",
+        "kaizen",
+        "continuous[ _-]?improvement"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/*.rst",
+        "**/*.adoc",
+        "**/*.txt"
+      ],
+      "why": "改善サイクルが測定・制御され、成果が評価されている（レベル4）。"
+    },
+    {
+      "id": "automated-improvement-detection",
+      "axis": "A6",
+      "hint_level": 5,
+      "title": "改善ポイントの自動特定・提案・実行（AI による分析・自動 PR 等）",
+      "content": [
+        "auto[ _-]?(generate|open|create)[ _-]?(pr|pull[ _-]?request)",
+        "bottleneck[ _-]?detect",
+        "ボトルネック.*自動",
+        "改善提案.*自動",
+        "ai[ _-]?(assistant|agent).*(improve|optimi)",
+        "self[ _-]?improving",
+        "autonomous"
+      ],
+      "content_paths": [
+        "**/*.md",
+        "**/.github/workflows/*.y*ml",
+        "**/*.py",
+        "**/*.y*ml"
+      ],
+      "why": "改善対象やアクションを自動で特定・実行する仕組みの存在を示す（レベル5）。"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+name: Validate documentation
+on:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: root
+            base: /
+          - label: project
+            base: /preview-repository/
+    env:
+      SITE_BASE_PATH: ${{ matrix.base }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build site (CSV 整合性・生成物同期・ダウンロード生成・VitePress)
+        run: npm run docs:build
+      - run: npm run test:site
+      - name: 評価スキルのスクリプトがこのリポジトリを走査できるか（スモークテスト）
+        run: |
+          python3 .claude/skills/observability-maturity-assessment/scripts/scan_repo.py . --out artifacts/evidence.json --md artifacts/evidence.md
+          python3 - <<'EOF'
+          import json
+          d = json.load(open("artifacts/evidence.json"))
+          assert d["axes"] and d["signals"], "走査結果が空です"
+          print("signals:", len(d["signals"]), "axes:", list(d["axes"]))
+          EOF
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: documentation-${{ matrix.label }}
+          path: artifacts/
+          retention-days: 14

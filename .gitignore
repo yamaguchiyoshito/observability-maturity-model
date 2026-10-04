@@ -43,3 +43,17 @@ $RECYCLE.BIN/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Claude Code セッション用のメモ・評価出力
+claudedocs/
+omm-assessment/
+
+# VitePress / Node
+node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/public/downloads/
+
+artifacts/
+dist/
+.claude/launch.json
