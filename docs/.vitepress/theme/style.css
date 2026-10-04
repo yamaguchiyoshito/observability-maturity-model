@@ -19,6 +19,28 @@
 .VPSidebarItem .text { font-size: 14px; }
 @media (min-width: 960px) { .VPDoc:not(.has-sidebar) .content { max-width: 1000px; } }
 
+/* ---------- 軸ページ / レベル別ページの区分ブロック（説明・具体例・改善・活用・注意点）。色は抑え、罫線と面の濃淡で段階を付ける ---------- */
+.vp-doc .omm-block { margin: 12px 0 16px; padding: 12px 18px 14px; border: 1px solid var(--vp-c-divider); border-radius: 6px; background: var(--vp-c-bg); }
+.vp-doc .omm-block + .omm-block { margin-top: 10px; }
+.vp-doc .omm-block p { margin: 0; font-size: 15px; line-height: 1.9; }
+.vp-doc .omm-block-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 6px !important; font-size: 13px !important; font-weight: 700; letter-spacing: .04em; color: var(--vp-c-text-2); line-height: 1.6 !important; }
+.vp-doc .omm-block-title span { font-size: 12px; font-weight: 400; letter-spacing: 0; color: var(--vp-c-text-3); }
+.vp-doc .omm-block-more { margin-top: 8px !important; font-size: 13px !important; }
+/* 説明: 枠なしの本文。レベル見出し直後の基準文として最も大きく読ませる */
+.vp-doc .omm-desc { padding: 0 0 0 2px; border: 0; background: transparent; }
+.vp-doc .omm-desc p:not(.omm-block-title) { font-size: 16px; }
+/* 具体例: 薄い面 + 細い灰色の左罫線 */
+.vp-doc .omm-example { background: var(--vp-c-bg-soft); border-left: 3px solid var(--vp-c-text-3); }
+.vp-doc .omm-example p:not(.omm-block-title) { color: var(--vp-c-text-1); }
+/* 改善アクション（必須）: 白地にブランド色の左罫線。ページ内で唯一の色付き要素 */
+.vp-doc .omm-required { border-left: 4px solid var(--vp-c-brand-1); }
+.vp-doc .omm-required .omm-block-title { color: var(--vp-c-brand-1); }
+/* 活用アクション（推奨）: 薄い面 + 灰色の左罫線（必須より一段弱く） */
+.vp-doc .omm-recommended { background: var(--vp-c-bg-soft); border-left: 4px solid var(--vp-c-divider); }
+/* 注意点メモ: 破線の枠、やや小さく淡い文字 */
+.vp-doc .omm-note { border-style: dashed; background: transparent; }
+.vp-doc .omm-note p:not(.omm-block-title) { font-size: 14px; color: var(--vp-c-text-2); }
+
 /* ---------- ダウンロード ---------- */
 .vp-doc .downloads-list { list-style: none; padding: 0; display: grid; gap: 12px; }
 .downloads-list li { margin: 0; }

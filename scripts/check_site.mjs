@@ -52,6 +52,13 @@ try {
   }
   results.checks.push('deep links, anchor navigation and refresh');
 
+  await page.goto(url + 'model/data-collection-and-visualization.html');
+  for (const [kind, count] of [['desc', 5], ['example', 5], ['required', 4], ['recommended', 4], ['note', 4]]) {
+    await expect(page.locator(`.omm-block.omm-${kind}`)).toHaveCount(count); // 5 レベル分の説明・具体例と 4 遷移分の改善・活用・注意点
+  }
+  await page.screenshot({ path: 'artifacts/axis-page.png', fullPage: true });
+  results.checks.push('axis page: description, example, required, recommended and note blocks');
+
   await page.goto(url + 'matrix.html');
   await expect(page.locator('h1')).toHaveText('全量マトリクス');
   await expect(page.locator('.omm-matrix-levels tbody tr')).toHaveCount(6);

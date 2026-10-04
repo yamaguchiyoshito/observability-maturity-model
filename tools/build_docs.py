@@ -64,6 +64,19 @@ def level_label(model: Model, n: int) -> str:
     return f"レベル{n}: {model.level_name(n)}"
 
 
+def block(kind: str, title: str, body: str, caption: str = "", extra_html: str = "") -> str:
+    """説明 / 具体例 / 改善アクション / 活用アクション / 注意点メモ を視覚的に区別するブロック（スタイルは .vitepress/theme/style.css）。
+
+    kind: desc | example | required | recommended | note。1 行の HTML にして markdown-it の HTML ブロックとして扱わせる。
+    """
+    cap = f"<span>{html.escape(caption)}</span>" if caption else ""
+    tail = f'<p class="omm-block-more">{extra_html}</p>' if extra_html else ""
+    return (
+        f'<div class="omm-block omm-{kind}"><p class="omm-block-title">{html.escape(title)}{cap}</p>'
+        f"<p>{html.escape(body)}</p>{tail}</div>"
+    )
+
+
 def gen_model_index(model: Model) -> str:
     out: List[str] = [
         front_matter(title="成熟度モデル", nav_order=2, has_children=True, permalink="/model/"),
@@ -138,13 +151,9 @@ def gen_axis_page(model: Model, a: Axis) -> str:
             anchor(f"level-{n}"),
             f"## {level_label(model, n)}",
             "",
-            "**説明**",
+            block("desc", "説明", lv.description, "このレベルにある組織・チームの状態"),
             "",
-            lv.description,
-            "",
-            "**具体例**",
-            "",
-            lv.example,
+            block("example", "具体例", lv.example, "状態を具体化した例。自組織の実態と照らし合わせる"),
             "",
         ]
         if n < 5:
@@ -152,11 +161,11 @@ def gen_axis_page(model: Model, a: Axis) -> str:
             out += [anchor(f"transition-{n}-{n + 1}"), f"### レベル{n}→レベル{n + 1} に進むには", ""]
             if t:
                 out += [
-                    f"**改善アクション（必須）**: {t.improvement}",
+                    block("required", "改善アクション", t.improvement, "必須 — 次のレベルに進むための最小限の実施事項"),
                     "",
-                    f"**活用アクション（推奨）**: {t.leverage}",
+                    block("recommended", "活用アクション", t.leverage, "推奨 — 改善アクションの実効性を高め、次のレベルでの成功確率を上げる施策"),
                     "",
-                    f"> **注意点メモ**: {t.notes}",
+                    block("note", "注意点メモ", t.notes, "実施時に注意すべき点、誤解しやすい点"),
                     "",
                 ]
             else:
@@ -207,15 +216,16 @@ def gen_level_page(model: Model, n: int) -> str:
         out += [
             f"## {a.key}. [{a.name}](../model/{a.slug}.md#level-{n})",
             "",
-            lv.description,
+            block("desc", "説明", lv.description),
             "",
-            f"**具体例**: {lv.example}",
+            block("example", "具体例", lv.example),
             "",
         ]
         if n < 5:
             t = a.transitions.get((n, n + 1))
             if t:
-                out += [f"**レベル{n + 1} へ進むための改善アクション（必須）**: {t.improvement} （[活用アクション・注意点](../model/{a.slug}.md#transition-{n}-{n + 1})）", ""]
+                more = f'<a href="../model/{a.slug}.html#transition-{n}-{n + 1}">活用アクション・注意点メモ →</a>'
+                out += [block("required", f"レベル{n + 1} へ進むための改善アクション", t.improvement, "必須", more), ""]
     nav = []
     if n > 1:
         nav.append(f"← [レベル{n - 1}](level-{n - 1}.md)")
