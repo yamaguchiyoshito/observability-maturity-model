@@ -1,7 +1,5 @@
 ---
 title: "レベル1: 属人的"
-parent: "レベル別ビュー"
-nav_order: 1
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 

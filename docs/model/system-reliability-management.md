@@ -1,7 +1,5 @@
 ---
 title: "システムの信頼性管理"
-parent: "成熟度モデル"
-nav_order: 2
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 

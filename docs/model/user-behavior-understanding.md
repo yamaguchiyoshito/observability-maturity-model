@@ -1,7 +1,5 @@
 ---
 title: "ユーザー行動の理解と最適化"
-parent: "成熟度モデル"
-nav_order: 5
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 

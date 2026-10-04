@@ -1,7 +1,7 @@
 # オブザーバビリティ成熟度モデル
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-brightgreen.svg)](https://creativecommons.org/licenses/by/4.0/)
-[![docs-check](https://github.com/yamaguchiyoshito/observability-maturity-model/actions/workflows/docs-check.yml/badge.svg)](https://github.com/yamaguchiyoshito/observability-maturity-model/actions/workflows/docs-check.yml)
+[![Publish GitHub Pages](https://github.com/yamaguchiyoshito/observability-maturity-model/actions/workflows/pages.yml/badge.svg)](https://github.com/yamaguchiyoshito/observability-maturity-model/actions/workflows/pages.yml)
 
 DMM.comで策定・運用されている、組織のオブザーバビリティ能力を6つの評価軸で測定し、段階的な改善を支援するための成熟度モデルです。
 
@@ -31,7 +31,7 @@ DMM.comで策定・運用されている、組織のオブザーバビリティ�
 
 ### Web で読む（GitHub Pages）
 
-`docs/` 配下を GitHub Pages として公開する構成です（Jekyll + just-the-docs。ビルド不要、サイドバーと全文検索付き）。GitHub 上でも Markdown としてそのまま読めます。
+`docs/` 配下を [VitePress](https://vitepress.dev/) でビルドし、GitHub Actions から GitHub Pages に公開する構成です（サイドバー、日本語対応の全文検索、ダークモード付き）。GitHub 上でも Markdown としてそのまま読めます。
 
 | ページ | 内容 |
 |---|---|
@@ -45,20 +45,36 @@ DMM.comで策定・運用されている、組織のオブザーバビリティ�
 
 サイトの操作:
 
-- **目次の切替** — ヘッダ左端の「目次: 標準 / コンパクト」で左ペインを畳み、横長の表を全幅で読めます。設定はブラウザに保存されます。
-- **全文検索** — 日本語で検索できます（lunr の tokenizer を 2 文字単位に差し替え。`docs/_includes/head_custom.html`）。
+- **目次の切替** — 左の目次の上にある「目次をコンパクト表示」で目次を畳み、横長の表を広く読めます。設定はブラウザに保存され、描画前に適用されます。
+- **全文検索** — 日本語で検索できます（ローカル検索の tokenizer を 1 文字と 2 文字単位に設定。`docs/.vitepress/config.ts`）。
 
-公開手順: リポジトリの **Settings → Pages → Source: Deploy from a branch → Branch: `main` / Folder: `/docs`**。`docs/_config.yml` の `url` / `baseurl` / `aux_links` をフォーク先に合わせて書き換えてください。
+### 公開の仕組み
+
+| 項目 | 内容 |
+|---|---|
+| ビルド | `npm run docs:build`（[scripts/build_docs.mjs](scripts/build_docs.mjs)）: CSV の整合性 → 生成物の同期チェック → ダウンロード用ファイル生成 → VitePress ビルド |
+| 検証 | `npm run test:site`（[scripts/check_site.mjs](scripts/check_site.mjs)）: ビルド済みサイトを配信し、Playwright でトップ・深いリンク・全量マトリクス・個人評価の保存・目次切替・日本語検索・ダウンロード・モバイル表示を確認 |
+| 公開 | [.github/workflows/pages.yml](.github/workflows/pages.yml): `main` への push でビルドと検証を実行し、`actions/upload-pages-artifact` → `actions/deploy-pages` で公開 |
+| PR 検証 | [.github/workflows/docs.yml](.github/workflows/docs.yml): base パス `/` と `/preview-repository/` の 2 通りでビルドと検証を行い、スクリーンショットをアーティファクトに保存。評価スキルのスモークテストも実行 |
+| base パス | `actions/configure-pages` が渡す `SITE_BASE_PATH` を使用。ローカルではリポジトリ名から `/observability-maturity-model/` を既定にする |
+
+初回だけ、リポジトリの **Settings → Pages → Build and deployment → Source: GitHub Actions** を選んでください。フォーク先ごとの URL 書き換えは不要です（`GITHUB_REPOSITORY` から決まります）。
 
 ### ローカルでプレビューする
 
-GitHub Pages と同じ `github-pages` gem を含む Docker イメージで `docs/` を配信します（Ruby のインストールは不要）。
+Node.js（`.nvmrc` の版）と Python 3 が必要です。
 
 ```bash
-docker run --rm -p 4000:4000 -v "$PWD/docs:/srv/jekyll" -e PAGES_REPO_NWO=<owner>/observability-maturity-model jekyll/jekyll:pages jekyll serve --host 0.0.0.0 --force_polling
+npm ci
+npm run docs:dev
 ```
 
-`http://localhost:4000/observability-maturity-model/` で確認できます。`PAGES_REPO_NWO` はダウンロードページの GitHub リンク生成に使います。ページを追加した場合は `.md` リンクの書き換えが追従しないことがあるので、サーバを再起動してください。
+`http://localhost:5173/observability-maturity-model/` で確認できます。公開と同じ手順で検証するには、Playwright のブラウザを入れてから `npm test` を実行します。
+
+```bash
+npx playwright install chromium
+npm test
+```
 
 ### PDFファイル（閲覧用）
 
@@ -104,17 +120,18 @@ Claude Code をこのリポジトリで起動し:
 ```text
 csv/                      成熟度モデル・改善アクションプラン（唯一の正）
 pdf/                      閲覧用 PDF
-docs/                     GitHub Pages（Jekyll + just-the-docs）
-├── _config.yml           サイト設定（url / baseurl はフォーク先に合わせる）
-├── _includes/head_custom.html   サイト固有 CSS/JS の読み込み、日本語検索パッチ
-├── assets/css/omm.css    マトリクス表・個人評価・目次切替のスタイル
-├── assets/js/omm-site.js            目次の標準/コンパクト切替、折りたたみの一括開閉
-├── assets/js/omm-self-assessment.js 個人評価の選択・保存・集計
+build/model.json          [生成] CSV の JSON 表現。.vitepress/config.ts がサイドバー生成に読む
+docs/                     サイト（VitePress）
+├── .vitepress/config.ts  サイト設定（ナビ・サイドバー・日本語検索・base パス）
+├── .vitepress/theme/     テーマ拡張: SidebarToggle.vue（目次切替）, MatrixAssessment.vue（個人評価）, Downloads.vue, style.css
+├── public/               favicon。downloads/ はビルド時に csv/ pdf/ から生成（gitignore）
 ├── index.md, downloads.md, assessment/   手書きページ
 ├── model/, levels/, matrix.md, self-assessment.md   [生成] tools/build_docs.py が CSV から生成
-tools/build_docs.py       CSV → docs/ 生成、スキル同梱 CSV の同期、--check で CI 検証
+tools/build_docs.py       CSV → docs/ と build/model.json の生成、スキル同梱 CSV の同期、--check で同期検証、--downloads で配布物生成
+scripts/build_docs.mjs    サイトのビルド手順（CI とローカルで共通）
+scripts/check_site.mjs    ビルド済みサイトの Playwright 検証
 .claude/skills/observability-maturity-assessment/   評価下書き生成スキル（SKILL.md, scripts/, references/）
-.github/workflows/docs-check.yml   CSV 整合性・生成物同期・スキルのスモークテスト
+.github/workflows/        pages.yml（公開）, docs.yml（PR 検証）
 ```
 
 生成ページは直接編集せず、CSV を編集して `tools/build_docs.py` を実行してください。詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。

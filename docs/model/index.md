@@ -1,8 +1,5 @@
 ---
 title: "成熟度モデル"
-nav_order: 2
-has_children: true
-permalink: "/model/"
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 

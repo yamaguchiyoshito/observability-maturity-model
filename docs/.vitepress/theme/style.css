@@ -1,0 +1,112 @@
+:root {
+  --vp-c-brand-1: #5b3fd1;
+  --vp-c-brand-2: #6d52de;
+  --vp-c-brand-3: #7f66e6;
+  --vp-c-brand-soft: rgba(91, 63, 209, .10);
+  --vp-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  --vp-layout-max-width: 1500px;
+  --vp-sidebar-width: 280px;
+}
+.dark { --vp-c-brand-1: #b4a3ff; --vp-c-brand-2: #c7baff; --vp-c-brand-3: #9d88ff; --vp-c-brand-soft: rgba(180, 163, 255, .12); }
+.vp-doc { font-size: 16px; line-height: 1.95; }
+.vp-doc p, .vp-doc li { line-height: 1.95; }
+.vp-doc h1 { font-size: 2rem; line-height: 1.5; letter-spacing: -.02em; }
+.vp-doc h2 { margin-top: 44px; line-height: 1.6; }
+.vp-doc th, .vp-doc td { font-size: 15px; line-height: 1.8; min-width: 100px; }
+.vp-doc table { width: 100%; }
+.vp-doc a { text-underline-offset: 4px; }
+.VPNavBarTitle .title { font-size: 16px; font-weight: 700; }
+.VPSidebarItem .text { font-size: 14px; }
+@media (min-width: 960px) { .VPDoc:not(.has-sidebar) .content { max-width: 1000px; } }
+
+/* ---------- ダウンロード ---------- */
+.vp-doc .downloads-list { list-style: none; padding: 0; display: grid; gap: 12px; }
+.downloads-list li { margin: 0; }
+.downloads-list a { display: block; padding: 18px 20px; border: 1px solid var(--vp-c-divider); border-radius: 8px; text-decoration: none; transition: border-color .15s; }
+.downloads-list a:hover { border-color: var(--vp-c-brand-1); background: var(--vp-c-brand-soft); }
+.downloads-list a strong { display: block; font-size: 16px; }
+.downloads-list a span { display: block; color: var(--vp-c-text-2); font-size: 14px; margin-top: 4px; }
+.download-provenance { font-size: 14px; overflow-wrap: anywhere; margin-top: 24px; }
+.download-provenance summary { cursor: pointer; }
+.download-version { font-size: 14px; color: var(--vp-c-text-2); }
+
+/* ---------- マトリクス表（全量 / 個人評価）: 見出し行と評価軸列を固定した横スクロール表 ---------- */
+.vp-doc .omm-matrix-wrap { margin: 16px 0 28px; overflow: auto; max-height: calc(100vh - 150px); border: 1px solid var(--vp-c-divider); border-radius: 8px; }
+.vp-doc .omm-matrix-wrap table { display: table; width: max-content; min-width: 100%; margin: 0; border-collapse: separate; border-spacing: 0; }
+.vp-doc .omm-matrix th, .vp-doc .omm-matrix td { min-width: 280px; max-width: 340px; vertical-align: top; font-size: 13.5px; line-height: 1.7; border-width: 0 1px 1px 0; border-style: solid; border-color: var(--vp-c-divider); background: var(--vp-c-bg); }
+.vp-doc .omm-matrix thead th { position: sticky; top: 0; z-index: 2; text-align: center; background: var(--vp-c-bg-soft); }
+.vp-doc .omm-matrix thead th .omm-lv-name { display: block; font-weight: 400; font-size: 12px; color: var(--vp-c-text-2); }
+.vp-doc .omm-matrix th.omm-axis, .vp-doc .omm-matrix thead th:first-child { position: sticky; left: 0; z-index: 1; min-width: 200px; max-width: 230px; text-align: left; background: var(--vp-c-bg-soft); border-right: 1px solid var(--vp-c-divider); }
+.vp-doc .omm-matrix thead th:first-child { z-index: 3; }
+.vp-doc .omm-matrix th.omm-axis a { font-weight: 700; }
+.vp-doc .omm-matrix .omm-def { margin-top: 6px; font-weight: 400; font-size: 12px; line-height: 1.6; color: var(--vp-c-text-2); }
+.vp-doc .omm-matrix .omm-note { margin-top: 6px; font-weight: 400; font-size: 11px; line-height: 1.6; color: var(--vp-c-text-3); }
+.vp-doc .omm-matrix p { margin: 0 0 6px; line-height: 1.7; }
+.vp-doc .omm-matrix details { margin: 4px 0 6px; }
+.vp-doc .omm-matrix details summary { cursor: pointer; font-size: 12px; color: var(--vp-c-brand-1); list-style: none; }
+.vp-doc .omm-matrix details summary::before { content: "▸ "; }
+.vp-doc .omm-matrix details[open] summary::before { content: "▾ "; }
+.vp-doc .omm-matrix details p { margin: 6px 0 0; padding: 6px 10px; font-size: 12.5px; line-height: 1.7; color: var(--vp-c-text-1); background: var(--vp-c-bg-soft); border-left: 2px solid var(--vp-c-brand-1); }
+.vp-doc .omm-matrix a.omm-more { font-size: 12px; }
+.vp-doc .omm-toolbar { margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 639px) { .vp-doc .omm-matrix th.omm-axis, .vp-doc .omm-matrix thead th:first-child { min-width: 130px; max-width: 140px; } .vp-doc .omm-matrix th, .vp-doc .omm-matrix td { min-width: 220px; } }
+
+/* ---------- 個人評価: 選択できるセル ---------- */
+.vp-doc .omm-sa-table td.omm-sa-cell { cursor: pointer; position: relative; transition: background-color .12s; }
+.vp-doc .omm-sa-table td.omm-sa-cell:hover { background: var(--vp-c-brand-soft); }
+.vp-doc .omm-sa-table td.omm-sa-cell:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: -2px; }
+.vp-doc .omm-sa-table td.omm-sa-cell[aria-checked="true"] { background: var(--vp-c-brand-soft); box-shadow: inset 0 0 0 2px var(--vp-c-brand-1); }
+.vp-doc .omm-sa-table td.omm-sa-na { min-width: 120px; max-width: 140px; text-align: center; color: var(--vp-c-text-2); }
+.vp-doc .omm-sa-badge { display: inline-block; margin-bottom: 6px; padding: 0 8px; border: 1px solid var(--vp-c-divider); border-radius: 10px; font-size: 11px; font-weight: 700; line-height: 18px; color: var(--vp-c-text-3); }
+.vp-doc td.omm-sa-cell[aria-checked="true"] .omm-sa-badge { color: #fff; background: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); }
+.vp-doc td.omm-sa-cell[aria-checked="true"] .omm-sa-badge::after { content: " ✓"; }
+
+/* ---------- 個人評価: 集計 ---------- */
+.vp-doc .omm-sa-summary { margin: 24px 0 20px; padding: 16px 20px 18px; border: 1px solid var(--vp-c-divider); border-left: 4px solid var(--vp-c-brand-1); border-radius: 6px; background: var(--vp-c-bg-soft); }
+.vp-doc .omm-sa-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 6px; padding: 0; border: 0; font-size: 16px; font-weight: 700; color: var(--vp-c-brand-1); line-height: 1.6; }
+.vp-doc .omm-sa-title span { font-size: 12px; font-weight: 400; color: var(--vp-c-text-3); }
+.vp-doc .omm-sa-help { margin: 0 0 12px; font-size: 14px; line-height: 1.8; color: var(--vp-c-text-2); }
+.vp-doc .omm-sa-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 0 0 12px; font-size: 14px; }
+.vp-doc .omm-sa-meta input { margin-left: 6px; padding: 4px 10px; min-width: 16rem; border: 1px solid var(--vp-c-divider); border-radius: 6px; background: var(--vp-c-bg); color: var(--vp-c-text-1); font: inherit; font-size: 14px; }
+.vp-doc .omm-sa-meta input:focus { outline: 2px solid var(--vp-c-brand-1); outline-offset: -1px; }
+.vp-doc .omm-sa-updated { font-size: 13px; color: var(--vp-c-text-3); }
+.vp-doc .omm-sa-stats { display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 0 0 12px; }
+.vp-doc .omm-sa-stats .stat { display: flex; flex-direction: column; min-width: 68px; padding: 8px 12px; border: 1px solid var(--vp-c-divider); border-radius: 6px; background: var(--vp-c-bg); font-size: 12px; color: var(--vp-c-text-2); line-height: 1.4; }
+.vp-doc .omm-sa-stats .stat strong { font-size: 22px; font-weight: 650; color: var(--vp-c-text-1); line-height: 1.2; }
+.vp-doc .omm-sa-stats .stat strong small { font-size: 13px; font-weight: 400; color: var(--vp-c-text-3); }
+.vp-doc .omm-sa-stats .stat-primary { border-color: var(--vp-c-brand-1); }
+.vp-doc .omm-sa-stats .stat-primary strong { color: var(--vp-c-brand-1); }
+.vp-doc .omm-sa-axes { font-size: 14px; }
+.vp-doc .omm-sa-axes th, .vp-doc .omm-sa-axes td { font-size: 14px; }
+.vp-doc .omm-lv-pill { display: inline-block; min-width: 2.2rem; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #fff; text-align: center; background: var(--vp-c-brand-1); line-height: 20px; }
+.vp-doc .omm-lv-pill.omm-lv-none { color: var(--vp-c-text-3); background: var(--vp-c-bg); border: 1px solid var(--vp-c-divider); }
+.vp-doc .omm-sa-note { margin: 0 0 12px; font-size: 14px; color: var(--vp-c-text-2); }
+.vp-doc .omm-sa-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.vp-doc .omm-button { padding: 4px 14px; border: 1px solid var(--vp-c-brand-1); border-radius: 6px; background: var(--vp-c-bg); color: var(--vp-c-brand-1); font-size: 13px; font-weight: 600; line-height: 1.6; cursor: pointer; }
+.vp-doc .omm-button:hover { background: var(--vp-c-brand-soft); }
+.vp-doc .omm-button:disabled { opacity: .5; cursor: default; }
+.vp-doc .omm-button-danger { border-color: var(--vp-c-danger-1); color: var(--vp-c-danger-1); }
+.vp-doc .omm-button-danger:hover:not(:disabled) { background: var(--vp-c-danger-soft); }
+.vp-doc .omm-sa-markdown { margin-top: 12px; font-size: 13px; }
+.vp-doc .omm-sa-markdown summary { cursor: pointer; color: var(--vp-c-text-2); }
+.vp-doc .omm-sa-markdown pre { margin: 8px 0 0; padding: 12px 16px; border-radius: 6px; background: var(--vp-c-bg); font-size: 12px; line-height: 1.6; overflow: auto; max-height: 320px; }
+
+/* ---------- 目次: 標準 / コンパクト。コンパクトは切替ボタンだけを残し、横長の表のために約 216px を空ける。デスクトップのみ。 ---------- */
+.sidebar-toggle { display: none; }
+@media (min-width: 960px) {
+  .sidebar-toggle { display: flex; align-items: center; gap: 8px; width: 100%; margin: 0 0 12px; padding: 4px 8px; border: 1px solid var(--vp-c-divider); border-radius: 6px; background: var(--vp-c-bg); color: var(--vp-c-text-2); font-size: 12px; line-height: 1.6; cursor: pointer; }
+  .sidebar-toggle:hover { border-color: var(--vp-c-brand-1); color: var(--vp-c-brand-1); }
+  .sidebar-toggle-icon { font-size: 16px; font-weight: 700; line-height: 1; }
+  html[data-sidebar="compact"] .VPSidebar { width: 64px; padding-left: 12px; padding-right: 12px; }
+  html[data-sidebar="compact"] .VPSidebar .nav > .group { display: none; }
+  html[data-sidebar="compact"] .VPSidebar .sidebar-toggle { justify-content: center; width: 40px; height: 40px; padding: 0; }
+  html[data-sidebar="compact"] .VPSidebar .sidebar-toggle-text { display: none; }
+  html[data-sidebar="compact"] .VPContent.has-sidebar { padding-left: 64px; }
+  html[data-sidebar="compact"] .VPNavBar.has-sidebar .title { background-color: var(--vp-nav-bg-color); }
+}
+@media (min-width: 1440px) {
+  html[data-sidebar="compact"] .VPSidebar { padding-left: max(12px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2)); width: calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + 32px); }
+  html[data-sidebar="compact"] .VPContent.has-sidebar { padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + 64px); }
+}
+@media (max-width: 639px) { .vp-doc h1 { font-size: 1.65rem; } .vp-doc th, .vp-doc td { min-width: 110px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; } }

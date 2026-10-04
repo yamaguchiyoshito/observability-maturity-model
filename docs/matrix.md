@@ -1,15 +1,16 @@
 ---
 title: "全量マトリクス"
-nav_order: 3
+description: "6 つの評価軸を縦軸、成熟度レベル1〜5 を横軸に、全セルの説明と具体例、レベル間の改善アクションを 1 枚の表で見渡します。"
+aside: false
+outline: false
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
-<!-- permalink は付けない: 相対パス（assets/, model/）を Pages と GitHub の両方で一致させるため -->
 
 # 全量マトリクス
 
-縦軸に評価軸、横軸に成熟度レベルを取り、全セルの「説明」を 1 枚で確認できる表です。「具体例」はセル内で展開します。表は横に長いので、画面上部の **目次: コンパクト** で左ペインを畳むと読みやすくなります。
+縦軸に評価軸、横軸に成熟度レベルを取り、全セルの「説明」を 1 枚で確認できる表です。「具体例」はセル内で展開します。表は縦横にスクロールでき、見出し行と評価軸の列は固定されます。表が広いときは、左の目次の上にあるボタンで目次をコンパクト表示にできます。
 
-<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-levels" data-open="true">具体例をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-levels" data-open="false">すべて閉じる</button></p>
+<p class="omm-toolbar"><button type="button" class="omm-button omm-expand" data-target=".omm-matrix-levels" data-open="true">具体例をすべて開く</button> <button type="button" class="omm-button omm-expand" data-target=".omm-matrix-levels" data-open="false">すべて閉じる</button></p>
 
 ## 成熟度レベル定義
 
@@ -28,7 +29,7 @@ nav_order: 3
 
 各セルは「改善アクション（必須）」を表示し、「活用アクション（推奨）」「注意点メモ」はセル内で展開します。
 
-<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-actions" data-open="true">活用アクション・注意点をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-actions" data-open="false">すべて閉じる</button></p>
+<p class="omm-toolbar"><button type="button" class="omm-button omm-expand" data-target=".omm-matrix-actions" data-open="true">活用アクション・注意点をすべて開く</button> <button type="button" class="omm-button omm-expand" data-target=".omm-matrix-actions" data-open="false">すべて閉じる</button></p>
 
 <div class="omm-matrix-wrap"><table class="omm-matrix omm-matrix-actions">
 <thead><tr><th>評価軸</th><th>L1→L2</th><th>L2→L3</th><th>L3→L4</th><th>L4→L5</th></tr></thead>

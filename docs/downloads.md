@@ -1,34 +1,20 @@
 ---
 title: ダウンロード
-nav_order: 7
+description: 成熟度モデルと改善アクションプランの PDF・CSV・JSON。サイトと同じ CSV（唯一の正）から生成。
 ---
 
 # ダウンロード
 
-## PDF（閲覧用）
+サイトと同じ `csv/` から複製・生成したファイルです。PDF は読みやすいレイアウトの閲覧用、CSV は編集・カスタマイズ用の元データ、JSON は機械可読形式です。
 
-読みやすいレイアウトで提供しています。まずはこちらをご覧ください。
+<Downloads />
 
-- [成熟度モデル (PDF)]({{ site.github.repository_url }}/blob/main/pdf/observability-maturity-model.pdf) — 6 つの評価軸について、レベル1〜5 の状態と具体例
-- [改善アクションプラン (PDF)]({{ site.github.repository_url }}/blob/main/pdf/improvement-action-plan.pdf) — 各レベルから次のレベルへ進むための改善アクション（必須）・活用アクション（推奨）・注意点メモ
+## 使い方
 
-## CSV（編集用データソース）
-
-PDF と本サイトの元データです。自社向けにカスタマイズする際はこちらを編集してください（唯一の正）。
-
-- [成熟度モデル (CSV)]({{ site.github.repository_url }}/blob/main/csv/observability-maturity-model.csv)
-- [改善アクションプラン (CSV)]({{ site.github.repository_url }}/blob/main/csv/improvement-action-plan.csv)
-
-編集手順と注意点（2 つの CSV の整合性、セル内改行のエスケープ）は [CONTRIBUTING.md]({{ site.github.repository_url }}/blob/main/CONTRIBUTING.md) を参照してください。
-
-## 機械可読データ
-
-CSV を JSON に変換するには、リポジトリで次を実行します（標準ライブラリのみ）。
-
-```bash
-python3 .claude/skills/observability-maturity-assessment/scripts/omm_model.py > model.json
-```
+- **PDF** — まず全体を読むときに。成熟度モデル（6 軸 × 5 レベルの状態と具体例）と改善アクションプラン（レベル間の改善・活用アクション、注意点）の 2 冊です。
+- **CSV** — 自社向けにカスタマイズするときに。2 つの CSV は評価軸名とレベル定義で対応しているので、両方を揃えて編集してください。手順と注意点は [CONTRIBUTING.md](https://github.com/dmm-com/observability-maturity-model/blob/main/CONTRIBUTING.md) を参照してください。
+- **JSON** — スクリプトやツールから読むときに。評価軸・レベル定義・具体例・改善アクションを 1 ファイルにまとめています（`tools/build_docs.py` が CSV から生成）。
 
 ## ライセンス
 
-[Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)。利用・改変・再配布の際は著作者 **DMM.com LLC** のクレジットを表示してください。
+[Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/deed.ja)。利用・改変・再配布の際は著作者 **DMM.com LLC** のクレジットを表示してください。

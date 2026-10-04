@@ -16,15 +16,19 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
+import json
+import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List
 
 REPO = Path(__file__).resolve().parents[1]
 SKILL = REPO / ".claude" / "skills" / "observability-maturity-assessment"
 sys.path.insert(0, str(SKILL / "scripts"))
-from omm_model import ACTION_CSV, MODEL_CSV, Axis, Model, load_model  # noqa: E402
+from omm_model import ACTION_CSV, MODEL_CSV, Axis, Model, load_model, to_dict  # noqa: E402
 
 DOCS = REPO / "docs"
 GENERATED_NOTE = (
@@ -32,9 +36,14 @@ GENERATED_NOTE = (
 )
 
 
+FRONT_MATTER_KEYS = ("title", "description", "titleTemplate", "aside", "outline")  # VitePress が解釈するキーだけを出力
+
+
 def front_matter(**kv: object) -> str:
     lines = ["---"]
     for k, v in kv.items():
+        if k not in FRONT_MATTER_KEYS:
+            continue  # nav_order / parent / permalink などサイトジェネレータ固有のキーは出力しない（並び順は .vitepress/config.ts）
         if isinstance(v, bool):
             lines.append(f"{k}: {'true' if v else 'false'}")
         elif isinstance(v, int):
@@ -232,15 +241,19 @@ def _axis_head_cell(a: Axis) -> str:
 def gen_matrix_page(model: Model) -> str:
     """6 軸 × 5 レベルの全量を 1 枚で確認するマトリクス（説明 + 折りたたみの具体例）と、改善アクションのマトリクス。"""
     out: List[str] = [
-        front_matter(title="全量マトリクス", nav_order=3),
+        front_matter(
+            title="全量マトリクス",
+            description="6 つの評価軸を縦軸、成熟度レベル1〜5 を横軸に、全セルの説明と具体例、レベル間の改善アクションを 1 枚の表で見渡します。",
+            aside=False,
+            outline=False,
+        ),
         GENERATED_NOTE,
-        "<!-- permalink は付けない: 相対パス（assets/, model/）を Pages と GitHub の両方で一致させるため -->",
         "",
         "# 全量マトリクス",
         "",
-        "縦軸に評価軸、横軸に成熟度レベルを取り、全セルの「説明」を 1 枚で確認できる表です。「具体例」はセル内で展開します。表は横に長いので、画面上部の **目次: コンパクト** で左ペインを畳むと読みやすくなります。",
+        "縦軸に評価軸、横軸に成熟度レベルを取り、全セルの「説明」を 1 枚で確認できる表です。「具体例」はセル内で展開します。表は縦横にスクロールでき、見出し行と評価軸の列は固定されます。表が広いときは、左の目次の上にあるボタンで目次をコンパクト表示にできます。",
         "",
-        '<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-levels" data-open="true">具体例をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-levels" data-open="false">すべて閉じる</button></p>',
+        '<p class="omm-toolbar"><button type="button" class="omm-button omm-expand" data-target=".omm-matrix-levels" data-open="true">具体例をすべて開く</button> <button type="button" class="omm-button omm-expand" data-target=".omm-matrix-levels" data-open="false">すべて閉じる</button></p>',
         "",
         "## 成熟度レベル定義",
         "",
@@ -267,7 +280,7 @@ def gen_matrix_page(model: Model) -> str:
         "",
         "各セルは「改善アクション（必須）」を表示し、「活用アクション（推奨）」「注意点メモ」はセル内で展開します。",
         "",
-        '<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-actions" data-open="true">活用アクション・注意点をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-matrix-actions" data-open="false">すべて閉じる</button></p>',
+        '<p class="omm-toolbar"><button type="button" class="omm-button omm-expand" data-target=".omm-matrix-actions" data-open="true">活用アクション・注意点をすべて開く</button> <button type="button" class="omm-button omm-expand" data-target=".omm-matrix-actions" data-open="false">すべて閉じる</button></p>',
         "",
         '<div class="omm-matrix-wrap"><table class="omm-matrix omm-matrix-actions">',
         "<thead><tr><th>評価軸</th>"
@@ -300,26 +313,27 @@ def gen_matrix_page(model: Model) -> str:
 
 def gen_self_assessment_page(model: Model) -> str:
     """セルを選択して自己評価を行うページ。状態は localStorage に保存し、集計をページ内に表示する（assets/js/omm-self-assessment.js）。"""
+    level_names = ",".join(f'"{n}":"{_h(model.level_name(n))}"' for n in range(1, 6))
     out: List[str] = [
-        front_matter(title="個人評価", nav_order=5),
+        front_matter(
+            title="個人評価",
+            description="6 つの評価軸について、マトリクス上でレベルを選択して自己評価を記録し、集計をページ内で確認します。記録はブラウザの localStorage にだけ保存されます。",
+            aside=False,
+            outline=False,
+        ),
         GENERATED_NOTE,
         "",
         "# 個人評価",
         "",
-        "各評価軸について、現状に最も近いレベルのセルをクリックして選択してください。選択内容はこのブラウザの localStorage に保存され、ページを閉じても保持されます（サーバには送信されません）。集計は選択のたびに下の「集計」に反映されます。",
+        "各評価軸について、現状に最も近いレベルのセルをクリックして選択してください。選択内容はこのブラウザの localStorage に保存され、ページを閉じても保持されます（サーバには送信されません）。集計は選択のたびに上の「自己評価の記録と集計」に反映されます。",
         "",
         "判定の目安は [評価の進め方](assessment/index.md) を参照してください。レベルは「そのレベルの定義を証跡で示せる最高のレベル」とし、上位の取り組みが一部あるだけでは上げないのが原則です。",
         "",
-        '<div class="omm-sa" id="omm-sa" data-storage-key="omm-self-assessment-v1">',
-        '<div class="omm-sa-meta">',
-        '<label>評価対象 <input type="text" id="omm-sa-target" placeholder="チーム名 / サービス名" maxlength="80"></label>',
-        '<span>最終更新: <span id="omm-sa-updated">—</span></span>',
-        '<span class="omm-sa-actions"><button type="button" class="btn btn-outline" id="omm-sa-copy">集計を Markdown でコピー</button> <button type="button" class="btn btn-outline" id="omm-sa-reset">リセット</button></span>',
-        "</div>",
+        "<ClientOnly><MatrixAssessment /></ClientOnly>",
         "",
-        '<p class="omm-toolbar"><button type="button" class="btn btn-outline omm-expand" data-target=".omm-sa-table" data-open="true">具体例をすべて開く</button> <button type="button" class="btn btn-outline omm-expand" data-target=".omm-sa-table" data-open="false">すべて閉じる</button></p>',
+        '<p class="omm-toolbar"><button type="button" class="omm-button omm-expand" data-target=".omm-sa-table" data-open="true">具体例をすべて開く</button> <button type="button" class="omm-button omm-expand" data-target=".omm-sa-table" data-open="false">すべて閉じる</button></p>',
         "",
-        '<div class="omm-matrix-wrap"><table class="omm-matrix omm-sa-table">',
+        '<div class="omm-matrix-wrap"><table class="omm-matrix omm-sa-table" data-level-names=\'{' + level_names + "}'>",
         "<thead><tr><th>評価軸</th>"
         + "".join(f'<th>L{n}<br><span class="omm-lv-name">{_h(model.level_name(n))}</span></th>' for n in range(1, 6))
         + "<th>対象外</th></tr></thead>",
@@ -344,16 +358,8 @@ def gen_self_assessment_page(model: Model) -> str:
             f'<tr data-axis="{a.key}" data-axis-name="{_h(a.name)}" data-axis-slug="{a.slug}">'
             f"{_axis_head_cell(a)}{''.join(cells)}</tr>"
         )
-    level_names = ",".join(f'"{n}":"{_h(model.level_name(n))}"' for n in range(1, 6))
     out += [
         "</tbody></table></div>",
-        "",
-        '<h2 id="summary">集計</h2>',
-        '<div id="omm-sa-summary" class="omm-sa-summary" data-level-names=\'{' + level_names + "}'>"
-        '<p class="omm-muted">まだ選択がありません。</p></div>',
-        "</div>",
-        "",
-        '<script src="assets/js/omm-self-assessment.js" defer></script>',
         "",
         "## 使い方の補足",
         "",
@@ -377,13 +383,54 @@ def planned_outputs(model: Model) -> Dict[Path, str]:
     return files
 
 
+DOWNLOADS = DOCS / "public" / "downloads"
+DOWNLOAD_FILES = [
+    # (配布名, 元ファイル, 表示名, 説明)
+    ("observability-maturity-model.pdf", REPO / "pdf" / "observability-maturity-model.pdf", "成熟度モデル（PDF）", "6 つの評価軸について、レベル1〜5 の状態と具体例"),
+    ("improvement-action-plan.pdf", REPO / "pdf" / "improvement-action-plan.pdf", "改善アクションプラン（PDF）", "各レベルから次のレベルへ進むための改善・活用アクションと注意点"),
+    ("observability-maturity-model.csv", REPO / "csv" / MODEL_CSV, "成熟度モデル（CSV）", "編集・カスタマイズ用の元データ（唯一の正）"),
+    ("improvement-action-plan.csv", REPO / "csv" / ACTION_CSV, "改善アクションプラン（CSV）", "編集・カスタマイズ用の元データ（唯一の正）"),
+]
+
+
+def model_json(model: Model) -> str:
+    return json.dumps(to_dict(model), ensure_ascii=False, indent=2) + "\n"
+
+
+def build_downloads(model: Model) -> int:
+    """csv/ と pdf/ を docs/public/downloads/ に複製し、JSON と manifest.json を書く（gitignore 対象のビルド成果物）。"""
+    DOWNLOADS.mkdir(parents=True, exist_ok=True)
+    files = []
+    for name, src, title, desc in DOWNLOAD_FILES:
+        data = src.read_bytes()
+        (DOWNLOADS / name).write_bytes(data)
+        files.append({"name": name, "title": title, "description": desc, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+    data = model_json(model).encode("utf-8")
+    (DOWNLOADS / "observability-maturity-model.json").write_bytes(data)
+    files.append({"name": "observability-maturity-model.json", "title": "成熟度モデル + 改善アクションプラン（JSON）", "description": "評価軸・レベル定義・具体例・改善アクションを 1 ファイルにまとめた機械可読形式", "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+    try:
+        commit = subprocess.run(["git", "-C", str(REPO), "rev-parse", "HEAD"], capture_output=True, text=True, check=False).stdout.strip() or "unknown"
+    except OSError:
+        commit = "unknown"
+    manifest = {"generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "commit": commit, "files": files}
+    (DOWNLOADS / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return len(files)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check", action="store_true", help="差分があれば exit 1（書き込みはしない）")
+    ap.add_argument("--downloads", action="store_true", help="docs/public/downloads/ だけを生成する（ビルド成果物。差分チェック対象外）")
     args = ap.parse_args()
 
     model = load_model(str(REPO / "csv"))
+    if args.downloads:
+        n = build_downloads(model)
+        print(f"ダウンロード用ファイル {n} 件 + manifest.json → {DOWNLOADS.relative_to(REPO)}/")
+        return 0
+
     outputs = planned_outputs(model)
+    outputs[REPO / "build" / "model.json"] = model_json(model)  # .vitepress/config.ts がサイドバー生成に読む
     csv_sync = {
         SKILL / "references" / "csv" / name: (REPO / "csv" / name).read_bytes() for name in (MODEL_CSV, ACTION_CSV)
     }
@@ -411,7 +458,9 @@ def main() -> int:
     for path, data in csv_sync.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
-    print(f"生成: {len(outputs)} ファイル（docs/model, docs/levels）, 同期: {len(csv_sync)} CSV → {SKILL.relative_to(REPO)}/references/csv/")
+    n_dl = build_downloads(model)
+    print(f"生成: {len(outputs)} ファイル（docs/model, docs/levels, docs/matrix.md, docs/self-assessment.md, build/model.json）, "
+          f"同期: {len(csv_sync)} CSV → {SKILL.relative_to(REPO)}/references/csv/, ダウンロード {n_dl} 件 → docs/public/downloads/")
     if stale:
         print("更新されたファイル:")
         for p in stale:

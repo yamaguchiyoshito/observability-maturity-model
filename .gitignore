@@ -48,8 +48,12 @@ __pycache__/
 claudedocs/
 omm-assessment/
 
-# Jekyll ローカルビルド
-docs/_site/
-docs/.jekyll-cache/
-docs/.sass-cache/
+# VitePress / Node
+node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/public/downloads/
+
+artifacts/
+dist/
 .claude/launch.json

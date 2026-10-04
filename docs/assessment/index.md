@@ -1,8 +1,6 @@
 ---
 title: 評価の進め方
-nav_order: 6
-has_children: true
-permalink: /assessment/
+description: 成熟度モデルで自組織・自サービスを評価する手順、判定で迷いやすい点、レポートテンプレート、Claude Code スキルによる下書き生成。
 ---
 
 # 評価の進め方

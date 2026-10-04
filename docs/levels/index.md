@@ -1,8 +1,5 @@
 ---
 title: "レベル別ビュー"
-nav_order: 4
-has_children: true
-permalink: "/levels/"
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 

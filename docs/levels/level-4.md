@@ -1,7 +1,5 @@
 ---
 title: "レベル4: 定量管理"
-parent: "レベル別ビュー"
-nav_order: 4
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 

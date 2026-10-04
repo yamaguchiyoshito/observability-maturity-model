@@ -33,17 +33,21 @@ PDFはCSVから生成される閲覧用の成果物で、CSVが唯一の正と�
 
 ## 🧩 Markdown（docs/）とスキル同梱データの再生成
 
-`docs/model/` と `docs/levels/` の Markdown、および評価スキルが同梱する CSV コピー（`.claude/skills/observability-maturity-assessment/references/csv/`）は、CSV から自動生成しています。**直接編集せず**、CSV を編集したあとに次を実行してください（Python 3.9 以降、標準ライブラリのみ）。
+`docs/model/`・`docs/levels/`・`docs/matrix.md`・`docs/self-assessment.md`、`build/model.json`、および評価スキルが同梱する CSV コピー（`.claude/skills/observability-maturity-assessment/references/csv/`）は、CSV から自動生成しています。**直接編集せず**、CSV を編集したあとに次を実行してください（Python 3.9 以降、標準ライブラリのみ）。
 
 ```bash
 python3 tools/build_docs.py
 ```
 
-CI（`.github/workflows/docs-check.yml`）は次を検証します。いずれかが失敗した場合は上記コマンドを実行して差分をコミットしてください。
+サイトのビルド（`npm run docs:build`）と PR 検証（`.github/workflows/docs.yml`）は次を行います。いずれかが失敗した場合は上記コマンドを実行して差分をコミットしてください。
 
 1. `omm_model.py --validate-only` — 2 つの CSV の対応（6 軸 × レベル1〜5 の定義と、レベル1→2 〜 4→5 の改善アクションが揃っているか）
 2. `build_docs.py --check` — 生成物が CSV と同期しているか
-3. 評価スキルのスクリプトがこのリポジトリを走査できるか（スモークテスト）
+3. `build_docs.py --downloads` — ダウンロード用の PDF・CSV・JSON と manifest を `docs/public/downloads/` に生成（gitignore 対象）
+4. VitePress ビルドと `scripts/check_site.mjs` による Playwright 検証（主要ページ、個人評価の保存、目次切替、日本語検索、ダウンロード、モバイル表示）
+5. 評価スキルのスクリプトがこのリポジトリを走査できるか（スモークテスト）
+
+サイトをローカルで確認するには `npm ci` のあと `npm run docs:dev` を実行します（Node.js は `.nvmrc` の版）。
 
 ### 評価軸を追加・改名する場合
 
@@ -53,7 +57,7 @@ CI（`.github/workflows/docs-check.yml`）は次を検証します。いずれ�
 
 ### 手書きページ
 
-`docs/index.md`・`docs/assessment/`・`docs/downloads.md`・`docs/_config.yml` は手書きです。モデル本文を引用する場合はリンクで参照し、文章をコピーしないでください（CSV 更新時に食い違います）。
+`docs/index.md`・`docs/assessment/`・`docs/downloads.md`・`docs/.vitepress/` は手書きです。モデル本文を引用する場合はリンクで参照し、文章をコピーしないでください（CSV 更新時に食い違います）。ナビゲーションとサイドバーの並びは `docs/.vitepress/config.ts` で定義しています（評価軸とレベルの項目は `build/model.json` から自動生成）。
 
 ## 📄 ライセンス
 

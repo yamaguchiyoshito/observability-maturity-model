@@ -1,0 +1,26 @@
+{
+  "name": "observability-maturity-model",
+  "version": "1.0.0",
+  "private": true,
+  "license": "CC-BY-4.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "scripts": {
+    "docs:sync": "python3 tools/build_docs.py",
+    "docs:check": "python3 .claude/skills/observability-maturity-assessment/scripts/omm_model.py --validate-only && python3 tools/build_docs.py --check",
+    "docs:dev": "npm run docs:sync && vitepress dev docs",
+    "docs:build": "node scripts/build_docs.mjs",
+    "docs:preview": "vitepress preview docs --port 4173",
+    "test:site": "node scripts/check_site.mjs",
+    "test": "npm run docs:build && npm run test:site"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2",
+    "vitepress": "1.6.4"
+  },
+  "overrides": {
+    "vite": "6.4.3"
+  }
+}

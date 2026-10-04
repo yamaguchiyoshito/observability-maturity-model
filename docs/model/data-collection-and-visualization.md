@@ -1,7 +1,5 @@
 ---
 title: "データ収集と可視化"
-parent: "成熟度モデル"
-nav_order: 1
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 

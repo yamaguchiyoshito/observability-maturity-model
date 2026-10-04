@@ -1,7 +1,5 @@
 ---
 title: "レベル3: 組織標準化"
-parent: "レベル別ビュー"
-nav_order: 3
 ---
 <!-- このファイルは tools/build_docs.py が csv/ から生成しています。直接編集せず CSV を編集してください。 -->
 
