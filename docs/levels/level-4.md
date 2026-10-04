@@ -55,7 +55,3 @@ title: "レベル4: 定量管理"
 
 <div class="omm-block omm-required"><p class="omm-block-title">レベル5 へ進むための改善アクション<span>必須</span></p><p>運用や開発の各プロセスに対して、KPI達成状況や改善活動の効果を定期的に可視化・共有する場（例：月次レビュー、振り返り会）を設け、継続的改善を組織文化として根付かせる活動を始めます。さらに、改善対象や改善アクションの特定・提案・実行にAIを活用し、改善サイクルの自動化・自律化を段階的に進めます。</p><p class="omm-block-more"><a href="../model/continuous-improvement.html#transition-4-5">活用アクション・注意点メモ →</a></p></div>
 
----
-
-← [レベル3](level-3.md) | [レベル別ビュー](index.md) | [レベル5](level-5.md) →
-

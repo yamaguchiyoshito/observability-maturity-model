@@ -55,7 +55,3 @@ title: "レベル3: 組織標準化"
 
 <div class="omm-block omm-required"><p class="omm-block-title">レベル4 へ進むための改善アクション<span>必須</span></p><p>定量データだけでなく、障害発生時の対応記録やリリース作業時のトラブル事例など、定性的な情報も収集・共有できる仕組みを整備します。改善事例をナレッジとして蓄積し、チーム内で学び合う文化を醸成します。</p><p class="omm-block-more"><a href="../model/continuous-improvement.html#transition-3-4">活用アクション・注意点メモ →</a></p></div>
 
----
-
-← [レベル2](level-2.md) | [レベル別ビュー](index.md) | [レベル4](level-4.md) →
-

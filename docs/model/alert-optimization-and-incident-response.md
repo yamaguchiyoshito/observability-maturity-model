@@ -88,7 +88,3 @@ title: "アラート最適化と障害対応"
 
 <div class="omm-block omm-example"><p class="omm-block-title">具体例<span>状態を具体化した例。自組織の実態と照らし合わせる</span></p><p>AIがリアルタイムで異常を検知し、事前に定義された対応策（スケールアウト、トラフィックのリルーティング、自動ロールバックなど）に基づいて最適なアクションを判断・実行している。これにより、システムは人的介入なしで自己回復し、安定稼働を継続できるようにしている。</p></div>
 
----
-
-← [A3. 開発・運用プロセスの整備と最適化](dev-ops-process-optimization.md) | [成熟度モデルの一覧](index.md) | [A5. ユーザー行動の理解と最適化](user-behavior-understanding.md) →
-

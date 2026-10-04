@@ -90,7 +90,3 @@ title: "ユーザー行動の理解と最適化"
 
 <div class="omm-block omm-example"><p class="omm-block-title">具体例<span>状態を具体化した例。自組織の実態と照らし合わせる</span></p><p>AIがユーザーの行動をリアルタイムで分析し、A/Bテスト結果をもとにUIや機能の最適化を自動で実行している。たとえば、個々の行動パターンに応じて重要な機能を強調表示したり、使用頻度の低い機能を非表示にすることで、常に最適な体験を提供できる状態を実現している。</p></div>
 
----
-
-← [A4. アラート最適化と障害対応](alert-optimization-and-incident-response.md) | [成熟度モデルの一覧](index.md) | [A6. 継続的な改善と最適化](continuous-improvement.md) →
-

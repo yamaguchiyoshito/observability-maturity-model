@@ -88,7 +88,3 @@ title: "データ収集と可視化"
 
 <div class="omm-block omm-example"><p class="omm-block-title">具体例<span>状態を具体化した例。自組織の実態と照らし合わせる</span></p><p>AIが収集データからトラフィックの急増を予測しており、ダッシュボードの構成変更やアラートルールの最適化を提案・自動実行している。運用側での介入を最小限に抑えつつ、改善活動を継続的に自動化している。</p></div>
 
----
-
-[成熟度モデルの一覧](index.md) | [A2. システムの信頼性管理](system-reliability-management.md) →
-
