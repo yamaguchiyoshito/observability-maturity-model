@@ -1,0 +1,97 @@
+<!--
+  日本語全文検索の有効化。
+  just-the-docs の検索は lunr.js を使うが、標準の lunr.trimmer は \w 以外（＝日本語すべて）を
+  トークンの両端から削るため日本語トークンが空になり、さらに空白区切りでは日本語の文が
+  1 トークンになって前方一致（TRAILING wildcard）でしか当たらない。
+  ここでは lunr を次のように差し替える（lunr.min.js と just-the-docs.js の読み込み後、
+  検索の初期化（DOMContentLoaded）より前に実行される）。
+    1. tokenizer: CJK の連続を 2 文字（bigram）に分割する。位置情報は重ならないように
+       各 bigram に先頭 1 文字分だけ持たせる（テーマのプレビュー強調表示が重複しないため）。
+    2. trimmer: 両端の記号だけを除き、文字種は問わない。
+    3. Query#term: 日本語トークンは presence=REQUIRED にし、クエリの全 bigram を含む
+       ページだけをヒットさせる（本文にない語で部分一致が大量に出るのを防ぐ）。
+-->
+<script>
+(function () {
+  if (typeof lunr === 'undefined') return;
+
+  var CJK = /[぀-ヿㇰ-ㇿ㐀-䶿一-鿿豈-﫿ｦ-ﾟ]/;
+  var EDGE = /^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu;
+  var base = lunr.tokenizer;
+
+  function token(str, start, len, meta) {
+    var m = lunr.utils.clone(meta) || {};
+    m.position = [start, len];
+    return new lunr.Token(str, m);
+  }
+
+  // 1 トークンを、CJK の連続は bigram 列に、それ以外は両端の記号を除いた語に分解する
+  function expand(tok) {
+    var s = tok.toString();
+    var meta = tok.metadata || {};
+    var origin = (meta.position && meta.position[0]) || 0;
+    var out = [];
+    var i = 0;
+    while (i < s.length) {
+      var j = i;
+      if (CJK.test(s[i])) {
+        while (j < s.length && CJK.test(s[j])) j++;
+        var run = s.slice(i, j);
+        if (run.length === 1) {
+          out.push(token(run, origin + i, 1, meta));
+        } else {
+          for (var k = 0; k + 1 < run.length; k++) {
+            var last = k + 2 === run.length;
+            out.push(token(run.slice(k, k + 2), origin + i + k, last ? 2 : 1, meta));
+          }
+        }
+      } else {
+        while (j < s.length && !CJK.test(s[j])) j++;
+        var frag = s.slice(i, j).replace(EDGE, '');
+        if (frag) out.push(token(frag, origin + i, j - i, meta));
+      }
+      i = j;
+    }
+    return out;
+  }
+
+  var tokenizer = function (obj, metadata) {
+    var out = [];
+    base(obj, metadata).forEach(function (t) {
+      expand(t).forEach(function (x) {
+        x.metadata.index = out.length;
+        out.push(x);
+      });
+    });
+    return out;
+  };
+  tokenizer.separator = base.separator;
+  lunr.tokenizer = tokenizer;
+
+  // 両端の記号だけを除き、文字種は問わない trimmer
+  lunr.trimmer = function (t) {
+    return t.update(function (s) { return s.replace(EDGE, ''); });
+  };
+  lunr.Pipeline.registerFunction(lunr.trimmer, 'trimmer');
+
+  // 日本語トークンは「すべて含む」ページだけを返す
+  var baseTerm = lunr.Query.prototype.term;
+  lunr.Query.prototype.term = function (term, options) {
+    var terms = Array.isArray(term) ? term : [term];
+    var self = this;
+    terms.forEach(function (t) {
+      var opts = lunr.utils.clone(options) || {};
+      if (CJK.test(t.toString())) {
+        // 前方一致句（テーマの通常検索）と編集距離句（0 件時フォールバック）は必須にする。
+        // 完全一致句は加点のみに留め、1 文字クエリでも前方一致で拾えるようにする。
+        var fuzzy = opts.editDistance != null;
+        if (opts.presence == null && (opts.wildcard != null || fuzzy)) opts.presence = lunr.Query.presence.REQUIRED;
+        // 2 文字トークンへの編集距離検索はほぼ全ページに当たるため無効化（必須化と合わせて 0 件になる）
+        delete opts.editDistance;
+      }
+      baseTerm.call(self, t, opts);
+    });
+    return this;
+  };
+})();
+</script>
