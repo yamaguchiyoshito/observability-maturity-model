@@ -43,3 +43,7 @@ $RECYCLE.BIN/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Claude Code セッション用のメモ・評価出力
+claudedocs/
+omm-assessment/

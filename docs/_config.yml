@@ -1,0 +1,46 @@
+# GitHub Pages（Jekyll）設定。リポジトリ設定で「Pages → Source: Deploy from a branch → /docs」を選ぶ。
+# テーマは just-the-docs をリモートテーマとして使う（ビルド不要・サイドバー・全文検索つき）。
+title: オブザーバビリティ成熟度モデル
+description: 組織のオブザーバビリティ能力を 6 つの評価軸・5 段階で評価し、段階的な改善を支援する成熟度モデル（DMM.com 策定, CC BY 4.0）
+lang: ja
+
+# フォーク先に合わせて書き換える（<owner>.github.io/<repo>）
+url: https://yamaguchiyoshito.github.io
+baseurl: /observability-maturity-model
+
+remote_theme: just-the-docs/just-the-docs
+plugins:
+  - jekyll-remote-theme
+  - jekyll-relative-links
+  - jekyll-github-metadata
+
+relative_links:
+  enabled: true
+  collections: false
+
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 3
+  tokenizer_separator: /[\s/]+/   # 日本語見出しをスペース区切りで扱う
+heading_anchors: true
+color_scheme: light
+
+aux_links:
+  GitHub: https://github.com/yamaguchiyoshito/observability-maturity-model
+  元リポジトリ (dmm-com): https://github.com/dmm-com/observability-maturity-model
+aux_links_new_tab: true
+
+back_to_top: true
+back_to_top_text: ページ先頭へ
+
+footer_content: >-
+  &copy; 2025 DMM.com LLC —
+  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+  本サイトの成熟度モデル本文は <a href="https://github.com/dmm-com/observability-maturity-model">dmm-com/observability-maturity-model</a> の CSV から生成しています。
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
