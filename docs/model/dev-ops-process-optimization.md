@@ -88,7 +88,3 @@ title: "開発・運用プロセスの整備と最適化"
 
 <div class="omm-block omm-example"><p class="omm-block-title">具体例<span>状態を具体化した例。自組織の実態と照らし合わせる</span></p><p>AIがコードの変更点を解析し、テスト結果や過去の障害データをもとにリリース可否を自動で判断している。問題があれば修正案を提示し、必要に応じて開発者が対応できる体制を整備している。リリース後もシステム挙動を監視し、自動ロールバックなどの復旧処理を即時に実行して、安定した運用を実現している。</p></div>
 
----
-
-← [A2. システムの信頼性管理](system-reliability-management.md) | [成熟度モデルの一覧](index.md) | [A4. アラート最適化と障害対応](alert-optimization-and-incident-response.md) →
-

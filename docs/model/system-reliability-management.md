@@ -88,7 +88,3 @@ title: "システムの信頼性管理"
 
 <div class="omm-block omm-example"><p class="omm-block-title">具体例<span>状態を具体化した例。自組織の実態と照らし合わせる</span></p><p>AIがログ・メトリクスを解析して障害予兆を検知しており、インシデント種別に応じた復旧手順を自動実行している。パフォーマンス異常や障害予兆の分析・対応を全自動化し、対応記録やナレッジも自動的に蓄積・共有している。サービス影響を抑えながら、継続的な改善もAIにより自律的に実現している。</p></div>
 
----
-
-← [A1. データ収集と可視化](data-collection-and-visualization.md) | [成熟度モデルの一覧](index.md) | [A3. 開発・運用プロセスの整備と最適化](dev-ops-process-optimization.md) →
-
