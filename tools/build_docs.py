@@ -170,15 +170,7 @@ def gen_axis_page(model: Model, a: Axis) -> str:
                 ]
             else:
                 out += ["（改善アクションプラン未定義）", ""]
-    nav = []
-    if a.index > 1:
-        prev = model.axes[a.index - 2]
-        nav.append(f"← [{prev.key}. {prev.name}]({prev.slug}.md)")
-    nav.append("[成熟度モデルの一覧](index.md)")
-    if a.index < len(model.axes):
-        nxt = model.axes[a.index]
-        nav.append(f"[{nxt.key}. {nxt.name}]({nxt.slug}.md) →")
-    out += ["---", "", " | ".join(nav), ""]
+    # 前後のページへの移動は VitePress の docFooter（前のページ / 次のページ）に任せる
     return "\n".join(out) + "\n"
 
 
@@ -226,13 +218,6 @@ def gen_level_page(model: Model, n: int) -> str:
             if t:
                 more = f'<a href="../model/{a.slug}.html#transition-{n}-{n + 1}">活用アクション・注意点メモ →</a>'
                 out += [block("required", f"レベル{n + 1} へ進むための改善アクション", t.improvement, "必須", more), ""]
-    nav = []
-    if n > 1:
-        nav.append(f"← [レベル{n - 1}](level-{n - 1}.md)")
-    nav.append("[レベル別ビュー](index.md)")
-    if n < 5:
-        nav.append(f"[レベル{n + 1}](level-{n + 1}.md) →")
-    out += ["---", "", " | ".join(nav), ""]
     return "\n".join(out) + "\n"
 
 

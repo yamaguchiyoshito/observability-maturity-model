@@ -55,7 +55,3 @@ title: "レベル2: プロセス確立"
 
 <div class="omm-block omm-required"><p class="omm-block-title">レベル3 へ進むための改善アクション<span>必須</span></p><p>障害対応やリリース結果を定量的に振り返るため、基本的な運用指標（例：障害検知時間、復旧時間、リリース成功率など）を可視化し、チームで共有できるようにします。</p><p class="omm-block-more"><a href="../model/continuous-improvement.html#transition-2-3">活用アクション・注意点メモ →</a></p></div>
 
----
-
-← [レベル1](level-1.md) | [レベル別ビュー](index.md) | [レベル3](level-3.md) →
-

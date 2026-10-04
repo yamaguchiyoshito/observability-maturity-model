@@ -55,7 +55,3 @@ title: "レベル1: 属人的"
 
 <div class="omm-block omm-required"><p class="omm-block-title">レベル2 へ進むための改善アクション<span>必須</span></p><p>障害発生時やリリース後には、簡易的な振り返り（例：What went well / What can be improved）を必ず実施し、発生した問題や改善点を記録します。記録はチーム内で共有し、継続的な運用改善に活用します。</p><p class="omm-block-more"><a href="../model/continuous-improvement.html#transition-1-2">活用アクション・注意点メモ →</a></p></div>
 
----
-
-[レベル別ビュー](index.md) | [レベル2](level-2.md) →
-
