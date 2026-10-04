@@ -18,6 +18,13 @@ relative_links:
   enabled: true
   collections: false
 
+# リモートテーマの _config.yml はマージされないため、全ページにテーマのレイアウトを明示する
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
 search_enabled: true
 search:
   heading_level: 2
